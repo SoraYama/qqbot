@@ -1,0 +1,14 @@
+{
+  "name": "cqbot",
+  "version": "1.0.0",
+  "description": "qq bot based on CoolQ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cq-websocket": "^2.0.2"
+  }
+}
