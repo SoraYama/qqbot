@@ -4,11 +4,26 @@
   "description": "qq bot based on CoolQ",
   "main": "index.js",
   "scripts": {
+    "dev": "ts-node-dev index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cq-websocket": "^2.0.2"
+    "bluebird": "^3.7.2",
+    "cq-websocket": "^2.0.2",
+    "fs-extra": "^8.1.0",
+    "glob": "^7.1.6",
+    "lodash": "^4.17.15",
+    "whocallsthefleet-database": "^20200114.1.0"
+  },
+  "devDependencies": {
+    "@types/bluebird": "^3.5.29",
+    "@types/fs-extra": "^8.0.1",
+    "@types/glob": "^7.1.1",
+    "@types/lodash": "^4.14.149",
+    "@types/node": "^13.1.7",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "typescript": "^3.7.4"
   }
 }
