@@ -9,22 +9,23 @@ class RepeatModule extends Module {
   }
 
   public onGroupMessage: MessageEventListener = (e, ctx) => {
-    this.messageQueue.push(ctx.message);
-    if (ctx.message === this.messageQueue[this.messageQueue.length - 1]) {
-      if (this.checkAndResetQueue()) {
-        e.setMessage(ctx.message);
+    if (this.messageQueue.length <= 0) {
+      this.messageQueue.push(ctx.message)
+    } else if (ctx.message !== this.messageQueue[this.messageQueue.length - 1]) {
+      this.resetQueue()
+    } else {
+      this.messageQueue.push(ctx.message);
+      if (this.messageQueue.length >= 2) {
+        e.setMessage(ctx.message)
+        this.resetQueue()
       }
     }
   };
 
   private messageQueue: string[] = [];
 
-  private checkAndResetQueue() {
-    if (this.messageQueue.length > 2) {
-      this.messageQueue = [];
-      return true;
-    }
-    return false;
+  private resetQueue() {
+    this.messageQueue = [];
   }
 }
 
