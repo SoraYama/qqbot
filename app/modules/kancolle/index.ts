@@ -1,3 +1,1 @@
-// import Module from "../module";
-
-// class KancolleModule extends Module {}
+export * from "./item-improvement";

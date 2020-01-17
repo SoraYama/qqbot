@@ -25,13 +25,10 @@ class Module {
     this.bot.on("error", this.onError);
   }
 
-  public onMessage: MessageEventListener = (_, ctx) => {
-    console.log("on message", ctx.message, ctx.user_id);
-  };
+  public onMessage: MessageEventListener = (_, ctx) => {};
 
   public onGroupMessage: MessageEventListener = (e, ctx) => {
     e.stopPropagation();
-    console.log("on group message", ctx.message, ctx.user_id);
   };
 
   public onError = (err: InvalidContextError | UnexpectedContextError) => {

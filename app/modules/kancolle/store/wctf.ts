@@ -29,7 +29,7 @@ class WCTF {
     this.parseData();
   }
 
-  public data: any;
+  public data: any = {};
 
   private parseData = async () => {
     try {
@@ -52,6 +52,14 @@ class WCTF {
       console.error(e.stack);
       return;
     }
+  };
+
+  public getShipById = (id: number) => {
+    return _.get(this.data, `ships[${id}]`);
+  };
+
+  public getItemById = (id: number) => {
+    return _.get(this.data, `items[${id}]`);
   };
 }
 

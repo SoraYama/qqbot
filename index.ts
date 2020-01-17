@@ -1,7 +1,14 @@
-import { CQWebSocket } from "cq-websocket";
-import RepeatModule from "./app/modules/yuen/repeat";
-
 global.APP_PATH = __dirname;
+
+import { CQWebSocket } from "cq-websocket";
+
+import koa from "./static";
+
+import RepeatModule from "./app/modules/yuen/repeat";
+import ItemImprovementModule from "./app/modules/kancolle/item-improvement";
+import XiaoMModule from "./app/modules/yuen/m";
+
+koa();
 
 const bot = new CQWebSocket({
   qq: 2464375668,
@@ -26,6 +33,8 @@ bot
 
 const loadModules = () => {
   new RepeatModule(bot);
+  new ItemImprovementModule(bot);
+  new XiaoMModule(bot);
 };
 
 bot.on("ready", () => {
