@@ -13,6 +13,7 @@ export default class XiaoMModule extends Module {
   }
 
   public onGroupMessage: MessageEventListener = (e, ctx) => {
+    console.log(ctx.message)
     const imagePath = path.resolve(
       global.APP_PATH,
       "app",
@@ -25,8 +26,10 @@ export default class XiaoMModule extends Module {
       .readdirSync(imagePath)
       .filter(fName => fName.endsWith(".jpg"));
     const selected = dirs[_.random(dirs.length)];
+    const repeatRandom = _.random(true)
+    console.log('repeatRandom', repeatRandom)
 
-    if (ctx.message.includes("小m") && _.random(true) > 0.5) {
+    if (ctx.message.includes("小m") && repeatRandom > 0.45) {
       console.log(
         selected,
         imagePath,
