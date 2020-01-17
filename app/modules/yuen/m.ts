@@ -26,7 +26,7 @@ export default class XiaoMModule extends Module {
       .filter(fName => fName.endsWith(".jpg"));
     const selected = dirs[_.random(dirs.length)];
 
-    if (ctx.message.includes("小m")) {
+    if (ctx.message.includes("小m") && _.random(true) > 0.5) {
       console.log(
         selected,
         imagePath,
@@ -37,7 +37,7 @@ export default class XiaoMModule extends Module {
         {
           type: "image",
           data: {
-            file: path.join(imagePath, selected)
+            file: `${selected}`
           }
         }
       ];
