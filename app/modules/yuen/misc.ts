@@ -1,5 +1,3 @@
-import path from "path";
-import fs from "fs-extra";
 import _ from "lodash";
 import CQWebSocket from "cq-websocket";
 import { MessageEventListener } from "typings/cq-websocket";
@@ -12,7 +10,12 @@ export default class Misc extends Module {
     this.init();
   }
 
-  public onGroupMessage: MessageEventListener = (e, ctx) => {
-    console.log(ctx.message)
-  }
+  public onGroupAtMe: MessageEventListener = (e, ctx, cqTag) => {
+    e.stopPropagation();
+    e.setMessage([
+      "我被🐖",
+      { type: "at", data: { qq: ctx.user_id } },
+      "艾特了"
+    ]);
+  };
 }

@@ -22,17 +22,18 @@ class Module {
   init() {
     this.bot.on("message", this.onMessage);
     this.bot.on("message.group", this.onGroupMessage);
+    this.bot.on("message.group.@.me", this.onGroupAtMe);
     this.bot.on("error", this.onError);
   }
 
-  public onMessage: MessageEventListener = (_, ctx) => {};
+  public onMessage: MessageEventListener = () => {};
 
-  public onGroupMessage: MessageEventListener = (e, ctx) => {
-    e.stopPropagation();
-  };
+  public onGroupMessage: MessageEventListener = () => {};
+
+  public onGroupAtMe: MessageEventListener = () => {};
 
   public onError = (err: InvalidContextError | UnexpectedContextError) => {
-    console.error(err);
+    console.error("on Error", err);
   };
 }
 
