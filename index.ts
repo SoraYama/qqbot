@@ -1,6 +1,7 @@
 global.APP_PATH = __dirname;
 
 import { CQWebSocket } from "cq-websocket";
+import { CronJob } from "cron";
 
 import RepeatModule from "./app/modules/yuen/repeat";
 import ItemImprovementModule from "./app/modules/kancolle/item-improvement";
@@ -35,6 +36,25 @@ const loadModules = () => {
   new Misc(bot);
 };
 
+const doCrons = () => {
+  const jobs = [
+    new CronJob(
+      "30 14,2 * * *",
+      () => {
+        bot("send_group_msg", {
+          group_id: 915378511,
+          message: "水虹提醒您演习将在半小时后刷新（<ゝω・）☆"
+        });
+      },
+      undefined,
+      true,
+      "Asia/Tokyo"
+    )
+  ];
+  jobs.forEach(job => job.start());
+};
+
 bot.on("ready", () => {
   loadModules();
+  doCrons();
 });
