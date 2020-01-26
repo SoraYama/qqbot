@@ -1,0 +1,7 @@
+version: "3"
+
+services:
+  cqbot:
+    build: .
+    image: cqbot
+    container_name: "cqbot"

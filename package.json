@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev index.ts",
+    "start": "ts-node index.ts -P ./tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -13,6 +14,7 @@
     "bluebird": "^3.7.2",
     "cq-websocket": "^2.0.2",
     "cron": "^1.8.2",
+    "dotenv": "^8.2.0",
     "fs-extra": "^8.1.0",
     "glob": "^7.1.6",
     "koa": "^2.11.0",
