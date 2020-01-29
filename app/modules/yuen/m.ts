@@ -25,7 +25,7 @@ export default class XiaoMModule extends Module {
     const dirs = fs
       .readdirSync(imagePath)
       .filter(fName => fName.endsWith(".jpg"));
-    const selected = dirs[_.random(dirs.length)];
+    const selected = dirs[_.random(dirs.length - 1)];
     const repeatRandom = _.random(true);
     console.log("repeatRandom", repeatRandom);
 
