@@ -11,14 +11,14 @@ export default class Misc extends Module {
   }
 
   public onGroupMessage: MessageEventListener = (e, ctx) => {
-    if (ctx.sender?.user_id === 1091879579 && Math.random() > 0.6) {
+    if (ctx.sender?.user_id === 1091879579 && Math.random() > 0.95) {
       e.setMessage("YGNB");
     }
   };
 
   public onGroupAtMe: MessageEventListener = (e, ctx, cqTag) => {
     e.stopPropagation();
-    if (Math.random() > 0.6) {
+    if (Math.random() > 0.5) {
       e.setMessage([
         "我被🐖",
         { type: "at", data: { qq: ctx.user_id } },
