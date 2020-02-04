@@ -10,8 +10,8 @@ const practice = (bot: CQWebSocket) =>
     "30 14,2 * * *",
     () => {
       bot("send_group_msg", {
-        // group_id: 915378511,
-        group_id: 956475298,
+        group_id: 915378511,
+        // group_id: 956475298, // 小群
         message: `${pickOne(names)}提醒您演习将在半小时后刷新（<ゝω・）☆`
       })
         .then(res => console.log(res))
