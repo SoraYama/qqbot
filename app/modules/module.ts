@@ -4,7 +4,8 @@ import CQWebSocket, {
 } from "cq-websocket";
 import path from "path";
 import fs from "fs-extra";
-import { MessageEventListener } from "typings/cq-websocket";
+
+import { MessageEventListener } from "../../typings/cq-websocket";
 
 class Module {
   public bot: CQWebSocket;

@@ -2,7 +2,7 @@ import path from "path";
 import fs from "fs-extra";
 import _ from "lodash";
 import CQWebSocket from "cq-websocket";
-import { MessageEventListener } from "typings/cq-websocket";
+import { MessageEventListener } from "../../../typings/cq-websocket";
 
 import Module from "../module";
 

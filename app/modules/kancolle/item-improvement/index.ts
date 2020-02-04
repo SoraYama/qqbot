@@ -3,7 +3,7 @@ import CQWebSocket from "cq-websocket";
 
 import wctf from "../store/wctf";
 import Module from "../../module";
-import { MessageEventListener } from "typings/cq-websocket";
+import { MessageEventListener } from "../../../../typings/cq-websocket";
 
 const getJSTDayofWeek = () => {
   const date = new Date();

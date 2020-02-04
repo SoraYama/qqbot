@@ -1,9 +1,9 @@
 global.APP_PATH = __dirname;
 
 import { CQWebSocket } from "cq-websocket";
-import { CronJob } from "cron";
 import dotenv from "dotenv";
 
+import crons from "./app/crons";
 import RepeatModule from "./app/modules/yuen/repeat";
 import ItemImprovementModule from "./app/modules/kancolle/item-improvement";
 import XiaoMModule from "./app/modules/yuen/m";
@@ -47,23 +47,7 @@ const loadModules = () => {
 };
 
 const doCrons = () => {
-  const jobs = [
-    new CronJob(
-      "30 14,2 * * *",
-      () => {
-        bot("send_group_msg", {
-          group_id: 915378511,
-          message: "水虹提醒您演习将在半小时后刷新（<ゝω・）☆"
-        })
-          .then(res => console.log(res))
-          .catch(e => console.error(e));
-      },
-      undefined,
-      true,
-      "Asia/Tokyo"
-    )
-  ];
-  jobs.forEach(job => job.start());
+  crons.forEach(getCron => getCron(bot).start());
 };
 
 bot.on("ready", () => {
