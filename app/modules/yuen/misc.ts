@@ -53,5 +53,14 @@ export default class Misc extends Module {
         "艾特了"
       ]);
     }
+    if (/sb|口我|弱智/gi.test(ctx.message)) {
+      this.bot("set_group_ban", {
+        group_id: ctx.group_id,
+        user_id: ctx.sender?.user_id,
+        duration: 60
+      })
+        .then(res => console.log("禁言结果", res))
+        .catch(err => console.error("禁言出错", err));
+    }
   };
 }

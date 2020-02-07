@@ -3,7 +3,19 @@ import _ from "lodash";
 import CQWebSocket from "cq-websocket";
 import pickOne from "../utils/pick";
 
-const names = ["水虹", "小m", "阿远", "Luka", "固拉多", "沛沛"];
+const names = [
+  "水虹",
+  "小m",
+  "阿远",
+  "Luka",
+  "固拉多",
+  "沛沛",
+  "雪芬",
+  "樟脑丸",
+  "小白白",
+  "锅风",
+  "茗子"
+];
 
 const practice = (bot: CQWebSocket) =>
   new CronJob(
