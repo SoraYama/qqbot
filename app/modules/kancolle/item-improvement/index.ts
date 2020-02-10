@@ -1,9 +1,9 @@
-import _ from "lodash";
-import CQWebSocket from "cq-websocket";
+import _ from 'lodash';
+import CQWebSocket from 'cq-websocket';
 
-import wctf from "../store/wctf";
-import Module from "../../module";
-import { MessageEventListener } from "../../../../typings/cq-websocket";
+import wctf from '../store/wctf';
+import Module from '../../module';
+import { MessageEventListener } from '../../../../typings/cq-websocket';
 
 const getJSTDayofWeek = () => {
   const date = new Date();
@@ -22,7 +22,7 @@ export default class ItemImprovementModule extends Module {
   }
 
   public onGroupMessage: MessageEventListener = (e, ctx) => {
-    if (ctx.message.includes("今日改修")) {
+    if (ctx.message.includes('今日改修')) {
       e.setMessage(_.map(this.todayItems, (v, k) => `${k}:\n${v}\n\n`));
     }
   };
@@ -30,42 +30,42 @@ export default class ItemImprovementModule extends Module {
   private get todayItems() {
     const todayItems = this.itemByDay[getJSTDayofWeek()];
     return _(todayItems)
-      .groupBy(item => item.type)
+      .groupBy((item) => item.type)
       .mapKeys((_, key) => wctf.data.item_types[key].name.ja_jp)
-      .mapValues(items =>
-        _.map(items, item => {
+      .mapValues((items) =>
+        _.map(items, (item) => {
           const name = item.name.ja_jp;
           const secretarys = _(item.improvement)
-            .map(i => i.req)
-            .map(req =>
+            .map((i) => i.req)
+            .map((req) =>
               _(req)
                 .filter(([availableDays]) => !!availableDays[getJSTDayofWeek()])
-                .map(([a, secIds]) =>
+                .map(([_, secIds]) =>
                   _(secIds)
-                    .map(id => wctf.getShipById(id).name.ja_jp)
-                    .value()
+                    .map((id: number) => wctf.getShipById(id).name.ja_jp)
+                    .value(),
                 )
-                .value()
+                .value(),
             )
             .flattenDeep()
             .uniq()
             .value()
-            .join(", ");
+            .join(', ');
           return `${name}【${secretarys}】`;
-        }).join("  ")
+        }).join('  '),
       )
       .value();
   }
 
   private get itemByDay() {
     const db = wctf.data;
-    return _(_.get(db, "arsenal_weekday"))
-      .mapValues(day =>
+    return _(_.get(db, 'arsenal_weekday'))
+      .mapValues((day) =>
         _(day.improvements)
           .map(([id]) => id)
           .map(wctf.getItemById)
-          .filter(i => !!i)
-          .value()
+          .filter((i) => !!i)
+          .value(),
       )
       .value();
   }

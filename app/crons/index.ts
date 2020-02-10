@@ -1,3 +1,3 @@
-import practice from "./practice";
+import practice from './practice';
 
 export default [practice];
