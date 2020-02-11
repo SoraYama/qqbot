@@ -19,7 +19,7 @@ const fetchAvatar = (bot: CQWebSocket) => async () => {
           {
             type: 'text',
             data: {
-              text: '#最新官推头像\n',
+              text: '#最新官推头像',
             },
           },
           {
