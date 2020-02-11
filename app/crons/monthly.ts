@@ -3,7 +3,7 @@ import CQWebSocket from 'cq-websocket';
 import { GROUP_ID, nameList } from '../configs';
 import pickOne from '../utils/pick';
 
-const daily = {
+const monthly = {
   time: '0 11,19 28-31 * *',
   onTime: (bot: CQWebSocket) => () => {
     const now = new Date();
@@ -20,4 +20,4 @@ const daily = {
   },
 };
 
-export default daily;
+export default monthly;
