@@ -48,6 +48,8 @@ export default class Misc extends Module {
     }
     if (Math.random() > 0.5) {
       e.setMessage(['我被🐖', { type: 'at', data: { qq: ctx.user_id } }, '艾特了']);
+    } else if (Math.random() < 0.15) {
+      e.setMessage('mua');
     }
     if (/sb|口我|弱智/gi.test(ctx.message) || Math.random() < 0.1) {
       this.bot('set_group_ban', {
