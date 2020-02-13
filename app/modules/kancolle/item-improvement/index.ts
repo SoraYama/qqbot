@@ -22,7 +22,7 @@ export default class ItemImprovementModule extends Module {
   }
 
   public onGroupMessage: MessageEventListener = (e, ctx) => {
-    if (ctx.message.includes('今日改修')) {
+    if (ctx.message.includes('/今日改修')) {
       e.setMessage(_.map(this.todayItems, (v, k) => `${k}:\n${v}\n\n`));
     }
   };
@@ -51,7 +51,7 @@ export default class ItemImprovementModule extends Module {
             .uniq()
             .value()
             .join(', ');
-          return `${name}【${secretarys}】`;
+          return `${name}【${secretarys}\n`;
         }).join('  '),
       )
       .value();
