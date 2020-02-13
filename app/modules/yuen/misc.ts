@@ -31,7 +31,7 @@ export default class Misc extends Module {
       const command = (commandTag.data.text as string).trim();
       const target = targetTag.data.qq;
       const param = (paramsTag.data.text as string).trim();
-      console.log(command, target, param);
+      // console.log(command, target, param);
       switch (command) {
         case 'ban':
           this.bot('set_group_ban', {
@@ -43,12 +43,14 @@ export default class Misc extends Module {
             .catch((err) => console.error('禁言出错', err));
           break;
         default:
+          e.setMessage('mua');
           return;
       }
     }
-    if (Math.random() > 0.5) {
+    const rolled = Math.random();
+    if (rolled > 0.5) {
       e.setMessage(['我被🐖', { type: 'at', data: { qq: ctx.user_id } }, '艾特了']);
-    } else if (Math.random() < 0.15) {
+    } else if (rolled < 0.15) {
       e.setMessage('mua');
     }
     if (/sb|口我|弱智/gi.test(ctx.message) || Math.random() < 0.1) {
