@@ -4,7 +4,7 @@ import { GROUP_ID, nameList } from '../configs';
 import pickOne from '../utils/pick';
 
 const daily = {
-  time: '0 2 * * *',
+  time: '0 4 * * *',
   onTime: (bot: CQWebSocket) => () => {
     bot('send_group_msg', {
       group_id: GROUP_ID,
