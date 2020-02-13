@@ -26,6 +26,7 @@ export default class Misc extends Module {
         atMeTag?.tagName !== 'at' ||
         atMeTag?.data?.qq !== ctx.self_id
       ) {
+        e.setMessage('mua');
         return;
       }
       const command = (commandTag.data.text as string).trim();
@@ -43,7 +44,6 @@ export default class Misc extends Module {
             .catch((err) => console.error('禁言出错', err));
           break;
         default:
-          e.setMessage('mua');
           return;
       }
     }
