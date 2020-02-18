@@ -2,7 +2,7 @@ import CQWebSocket from 'cq-websocket';
 import { GROUP_ID } from '../configs';
 
 const mtsxqy = {
-  time: '0 0,18,20 * * 0',
+  time: '0 1,20 * * 0',
   onTime: (bot: CQWebSocket) => () => {
     bot('send_group_msg', {
       group_id: GROUP_ID,
