@@ -55,7 +55,7 @@ export default class Misc extends Module {
     } else if (rolled < 0.15) {
       e.setMessage('mua');
     }
-    if (/sb|口我|弱智|傻|蠢/gi.test(ctx.message)) {
+    if (/sb|口我|弱智|傻|蠢|guna|爪巴|爬/gi.test(ctx.message)) {
       e.setMessage(pickOne(['NMSL', '弱智', '爪巴', '你没了']));
       this.bot('set_group_ban', {
         group_id: ctx.group_id,
