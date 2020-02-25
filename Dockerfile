@@ -1,12 +1,14 @@
 FROM node:12-alpine
 
+RUN sed -i 's#http://dl-cdn.alpinelinux.org#https://mirrors.ustc.edu.cn#g' /etc/apk/repositories
+
+RUN apk add --no-cache tzdata
+
+ENV TZ Asia/Shangha
+
 WORKDIR /app
 
 COPY ./package.json ./package.json
-
-RUN apk add tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
-  && echo "Asia/Shanghai" > /etc/timezone \
-  && apk del tzdata
 
 RUN yarn
 
