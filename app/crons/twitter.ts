@@ -3,7 +3,7 @@ import CQWebSocket from 'cq-websocket';
 
 import { GROUP_ID } from '../configs';
 
-let lastTimestamp = new Date().getTime();
+let lastTweetId: null | number = null;
 
 interface KcwikiTwitter {
   jp: string;
@@ -16,7 +16,12 @@ interface KcwikiTwitter {
 const fetchTwitter = (bot: CQWebSocket) => async () => {
   const { data } = await axios.get<Array<KcwikiTwitter>>('http://api.kcwiki.moe/tweet/1');
   const lastTweet = data[0];
-  if (new Date(lastTweet.date).getTime() > lastTimestamp) {
+  if (!lastTweetId) {
+    lastTweetId = lastTweet.id;
+    return;
+  }
+  if (lastTweet.id > lastTweetId) {
+    lastTweetId = lastTweet.id;
     const tweet = lastTweet.jp.replace(/<.*?>/g, '');
     bot('send_group_msg', {
       group_id: GROUP_ID,
@@ -25,7 +30,6 @@ const fetchTwitter = (bot: CQWebSocket) => async () => {
     })
       .then((res) => console.log(res))
       .catch((e) => console.error(e));
-    lastTimestamp = new Date(lastTweet.date).getTime();
   }
 };
 
