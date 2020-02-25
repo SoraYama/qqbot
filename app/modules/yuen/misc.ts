@@ -3,6 +3,7 @@ import CQWebSocket from 'cq-websocket';
 import Module from '../module';
 import { MessageEventListener } from '../../../typings/cq-websocket';
 import { YUEN_ID, ADMIN_ID } from '../../configs';
+import pickOne from '../../utils/pick';
 
 export default class Misc extends Module {
   constructor(bot: CQWebSocket) {
@@ -27,7 +28,7 @@ export default class Misc extends Module {
         atMeTag?.tagName !== 'at' ||
         atMeTag?.data?.qq !== ctx.self_id
       ) {
-        e.setMessage('mua');
+        e.setMessage('空山mua');
         return;
       }
       const command = (commandTag.data.text as string).trim();
@@ -60,7 +61,8 @@ export default class Misc extends Module {
     } else if (rolled < 0.15) {
       e.setMessage('mua');
     }
-    if (/sb|口我|弱智/gi.test(ctx.message) || Math.random() < 0.1) {
+    if (/sb|口我|弱智|傻|蠢/gi.test(ctx.message)) {
+      e.setMessage(pickOne(['NMSL', '弱智', '爪巴', '你没了']));
       this.bot('set_group_ban', {
         group_id: ctx.group_id,
         user_id: ctx.sender?.user_id,
