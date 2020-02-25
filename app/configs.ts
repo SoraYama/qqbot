@@ -15,6 +15,11 @@ export const nameList = [
   '小白白',
   '锅风',
   '茗子',
+  'poi',
+  '院长',
+  '我',
+  '姬堡',
+  '二邪',
 ];
 
 export const YUEN_ID = 1091879579;
