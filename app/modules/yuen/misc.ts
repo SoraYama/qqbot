@@ -50,10 +50,21 @@ export default class Misc extends Module {
       }
     }
     const rolled = Math.random();
-    if (rolled > 0.5) {
+    if (/mua/gi.test(ctx.message)) {
+      e.setMessage('mua');
+    } else if (rolled > 0.5) {
       e.setMessage(['我被🐖', { type: 'at', data: { qq: ctx.user_id } }, '艾特了']);
     } else if (rolled < 0.15) {
       e.setMessage('mua');
+    } else {
+      e.setMessage([
+        {
+          type: 'image',
+          data: {
+            file: 'http://pic.sorayamah.org/2020-02-25-11:38:19-39.jpg',
+          },
+        },
+      ]);
     }
     if (/sb|口我|弱智|傻|蠢|guna|爪巴|爬/gi.test(ctx.message)) {
       e.setMessage(pickOne(['NMSL', '弱智', '爪巴', '你没了']));
