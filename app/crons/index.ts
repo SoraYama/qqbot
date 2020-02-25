@@ -4,6 +4,7 @@ import { CronJob, CronCommand } from 'cron';
 
 import practice from './practice';
 import mtsxqy from './mtsxqy';
+import hourly from './hourly';
 import daily from './daily';
 import monthly from './monthly';
 import twitter from './twitter';
@@ -15,7 +16,7 @@ export interface Cron {
 }
 
 const list = map(
-  [practice, mtsxqy, daily, monthly, twitter, staffAvatar],
+  [practice, mtsxqy, hourly, daily, monthly, twitter, staffAvatar],
   (cron: Cron) => (bot: CQWebSocket) =>
     new CronJob(cron.time, cron.onTime(bot), undefined, true, 'Asia/Tokyo'),
 );
