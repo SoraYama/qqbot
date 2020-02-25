@@ -50,12 +50,6 @@ export default class Misc extends Module {
       }
     }
     const rolled = Math.random();
-    if (ctx.sender?.user_id === YUEN_ID) {
-      if (rolled < 0.5) {
-        e.setMessage('爪巴');
-        return;
-      }
-    }
     if (rolled > 0.5) {
       e.setMessage(['我被🐖', { type: 'at', data: { qq: ctx.user_id } }, '艾特了']);
     } else if (rolled < 0.15) {
