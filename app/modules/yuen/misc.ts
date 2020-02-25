@@ -2,6 +2,7 @@ import CQWebSocket from 'cq-websocket';
 
 import Module from '../module';
 import { MessageEventListener } from '../../../typings/cq-websocket';
+import { YUEN_ID, ADMIN_ID } from '../../configs';
 
 export default class Misc extends Module {
   constructor(bot: CQWebSocket) {
@@ -11,14 +12,14 @@ export default class Misc extends Module {
 
   public onGroupMessage: MessageEventListener = (e, ctx) => {
     // YUEN
-    if (ctx.sender?.user_id === 1091879579 && Math.random() > 0.95) {
+    if (ctx.sender?.user_id === YUEN_ID && Math.random() > 0.95) {
       e.setMessage('YGNB');
     }
   };
 
   public onGroupAtMe: MessageEventListener = (e, ctx, cqTags) => {
     e.stopPropagation();
-    if (ctx.sender?.user_id === 694692391) {
+    if (ctx.sender?.user_id === ADMIN_ID) {
       const [atMeTag, commandTag, targetTag, paramsTag] = cqTags;
       console.log(atMeTag, commandTag, targetTag, paramsTag);
       if (
@@ -48,6 +49,12 @@ export default class Misc extends Module {
       }
     }
     const rolled = Math.random();
+    if (ctx.sender?.user_id === YUEN_ID) {
+      if (rolled < 0.5) {
+        e.setMessage('爪巴');
+        return;
+      }
+    }
     if (rolled > 0.5) {
       e.setMessage(['我被🐖', { type: 'at', data: { qq: ctx.user_id } }, '艾特了']);
     } else if (rolled < 0.15) {

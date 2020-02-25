@@ -16,3 +16,7 @@ export const nameList = [
   '锅风',
   '茗子',
 ];
+
+export const YUEN_ID = 1091879579;
+
+export const ADMIN_ID = 694692391;

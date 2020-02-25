@@ -11,7 +11,7 @@ interface AvatarResponse {
 const fetchAvatar = (bot: CQWebSocket) => async () => {
   try {
     const { data } = await axios.get<AvatarResponse>('http://api.kcwiki.moe/avatar/latest');
-    if (lastAvatar !== data.latest) {
+    if (data.latest && lastAvatar !== data.latest) {
       lastAvatar = data.latest;
       bot('send_group_msg', {
         group_id: GROUP_ID,
