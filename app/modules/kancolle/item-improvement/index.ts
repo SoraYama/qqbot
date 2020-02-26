@@ -40,7 +40,8 @@ export default class ItemImprovementModule extends Module {
             .map((req) =>
               _(req)
                 .filter(([availableDays]) => !!availableDays[getJSTDayofWeek()])
-                .map(([_, secIds]) =>
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                .map(([n, secIds]) =>
                   _(secIds)
                     .map((id: number) => wctf.getShipById(id).name.ja_jp)
                     .value(),
@@ -51,7 +52,7 @@ export default class ItemImprovementModule extends Module {
             .uniq()
             .value()
             .join(', ');
-          return `${name}【${secretarys}\n`;
+          return `\n${name}【${secretarys}】`;
         }).join('  '),
       )
       .value();
