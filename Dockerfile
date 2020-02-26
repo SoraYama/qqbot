@@ -4,7 +4,7 @@ RUN sed -i 's#http://dl-cdn.alpinelinux.org#https://mirrors.ustc.edu.cn#g' /etc/
 
 RUN apk add --no-cache tzdata
 
-ENV TZ Asia/Shangha
+ENV TZ Asia/Shanghai
 
 WORKDIR /app
 
