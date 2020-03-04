@@ -25,7 +25,7 @@ const initData: PetData = {
 };
 
 class Writer {
-  private fileRoot = path.join(global.APP_PATH, 'app', 'modules', 'assets', 'pet');
+  private fileRoot = path.join(global.APP_PATH, 'db');
 
   private petFeedFile = 'feed.json';
 

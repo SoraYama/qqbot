@@ -44,7 +44,7 @@ export default class PetModule extends Module {
     };
 
     const feed = async () => {
-      data.pet.weight += strip(FEED_STEP + data.pet.weight);
+      data.pet.weight = strip(FEED_STEP + data.pet.weight);
       await writer.syncFile(data);
       reply(`已投喂, 🐇很开心\n当前体重为${data.pet.weight}kg`);
     };

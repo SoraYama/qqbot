@@ -1,7 +1,12 @@
-version: "3"
+version: '3'
 
 services:
   cqbot:
     build: .
     image: cqbot
-    container_name: "cqbot"
+    container_name: 'cqbot'
+    volumes:
+      - db:/app/db
+
+volumes:
+  - db
