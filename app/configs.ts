@@ -26,4 +26,4 @@ export const YUEN_ID = 1091879579;
 
 export const ADMIN_ID = 694692391;
 
-export const yuudachiVoiceAPI = 'http://revise.kcwiki.moe/v3/data/144.json';
+export const getVoiceAPI = (id: number) => `http://revise.kcwiki.moe/v3/data/${id}.json`;

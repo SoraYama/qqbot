@@ -1,7 +1,8 @@
 import CQWebSocket from 'cq-websocket';
 import axios from 'axios';
 
-import { GROUP_ID, yuudachiVoiceAPI } from '../configs';
+import { GROUP_ID, getVoiceAPI } from '../configs';
+import pickOne from '../utils/pick';
 
 interface StringRecord {
   [key: string]: string;
@@ -16,6 +17,11 @@ interface VoiceResponse {
   filename: string;
 }
 
+const KanMusuList = [
+  144, // 夕立
+  234, // 晓
+];
+
 const hourly = {
   time: '0 * * * *',
   onTime: (bot: CQWebSocket) => () => {
@@ -23,7 +29,7 @@ const hourly = {
     const h = now.getHours();
 
     axios
-      .get<VoiceResponse>(yuudachiVoiceAPI)
+      .get<VoiceResponse>(getVoiceAPI(pickOne(KanMusuList)))
       .then(({ data }) => {
         const { url } = data;
         const voiceUrl = url[`${h + 30}`];

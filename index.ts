@@ -8,6 +8,7 @@ import RepeatModule from './app/modules/yuen/repeat';
 import ItemImprovementModule from './app/modules/kancolle/item-improvement';
 import XiaoMModule from './app/modules/yuen/m';
 import Misc from './app/modules/yuen/misc';
+import PetModule from './app/modules/pet';
 
 const envs = dotenv.config();
 
@@ -44,6 +45,7 @@ const loadModules = () => {
   new ItemImprovementModule(bot);
   new XiaoMModule(bot);
   new Misc(bot);
+  new PetModule(bot);
 };
 
 const doCrons = () => {
