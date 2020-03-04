@@ -9,4 +9,4 @@ services:
       - db:/app/db
 
 volumes:
-  - db
+  db:
