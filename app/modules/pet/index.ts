@@ -12,6 +12,7 @@ const triggerMap = {
   info: 'info',
   me: 'me',
   help: 'help',
+  today: 'today',
 };
 
 type ActionTypes = keyof typeof triggerMap;
@@ -32,6 +33,7 @@ export default class PetModule extends Module {
     const infoTrigger = this.getTrigger('info');
     const helpTrigger = this.getTrigger('help');
     const myFeedingTrigger = this.getTrigger('me');
+    const todayTrigger = this.getTrigger('today');
 
     const data = await writer.readFile();
     const curUser = data.user[ctx.sender?.user_id];
@@ -49,7 +51,7 @@ export default class PetModule extends Module {
       reply(`已投喂, 🐇很开心\n当前体重为${data.pet.weight}kg`);
     };
 
-    switch (ctx.message) {
+    switch (_.trim(ctx.message)) {
       case feedTrigger: {
         const user = data.user[ctx.sender?.user_id];
         if (!user) {
@@ -86,7 +88,7 @@ export default class PetModule extends Module {
       }
       case TRIGGER_PREFIX:
       case helpTrigger: {
-        reply(`宠物: 🐇\n用法: ${TRIGGER_PREFIX} ${_.keys(triggerMap).join('|')}`);
+        reply(`宠物: 🐇\n用法: ${TRIGGER_PREFIX} ${_.keys(triggerMap).join(' | ')}`);
         return;
       }
       case myFeedingTrigger: {
@@ -97,6 +99,17 @@ export default class PetModule extends Module {
         const todayFedAmount = curUser.feedRecord[today].length;
         const totalFed = curUser.feedTotal;
         reply(`你今天投喂了${todayFedAmount}次\n总共投喂了${totalFed}kg`);
+        return;
+      }
+      case todayTrigger: {
+        const rankList = _(data.user)
+          .map((val, key) => ({ id: key, today: val.feedRecord[today] }))
+          .filter((item) => !!item.today)
+          .sortBy((item) => item.today.length)
+          .reverse()
+          .slice(0, 10)
+          .map((item, index) => `${index + 1}. ${item.id}: ${item.today.length}次`);
+        reply(`今日排行榜\n${rankList.join('\n')}`);
         return;
       }
       default: {
