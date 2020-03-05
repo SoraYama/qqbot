@@ -63,16 +63,16 @@ export default class PetModule extends Module {
         } else {
           const { feedRecord } = user;
           const todayFed = feedRecord[today];
-          if (todayFed.length >= FEED_DAILY_MAX) {
-            reply('今天投喂次数达到上限了哦');
-            return;
-          } else if (moment().hour() - moment(_.last(todayFed)).hour() < FEED_INTERVAL_MIN) {
-            reply('投喂冷却中...');
-            return;
-          }
           if (!todayFed) {
             feedRecord[today] = [now];
           } else {
+            if (todayFed.length >= FEED_DAILY_MAX) {
+              reply('今天投喂次数达到上限了哦');
+              return;
+            } else if (moment().hour() - moment(_.last(todayFed)).hour() < FEED_INTERVAL_MIN) {
+              reply('投喂冷却中...');
+              return;
+            }
             todayFed.push(now);
           }
           user.feedTotal = strip(FEED_STEP + user.feedTotal);
