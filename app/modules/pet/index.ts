@@ -11,7 +11,7 @@ const triggerMap = {
   feed: 'feed',
   info: 'info',
   me: 'me',
-  help: '',
+  help: 'help',
 };
 
 type ActionTypes = keyof typeof triggerMap;
@@ -63,20 +63,20 @@ export default class PetModule extends Module {
         } else {
           const { feedRecord } = user;
           const todayFed = feedRecord[today];
+          if (todayFed.length >= FEED_DAILY_MAX) {
+            reply('今天投喂次数达到上限了哦');
+            return;
+          } else if (moment().hour() - moment(_.last(todayFed)).hour() < FEED_INTERVAL_MIN) {
+            reply('投喂冷却中...');
+            return;
+          }
           if (!todayFed) {
             feedRecord[today] = [now];
           } else {
-            if (todayFed.length >= FEED_DAILY_MAX) {
-              reply('今天投喂次数达到上限了哦');
-              return;
-            } else if (moment().hour() - moment(_.last(todayFed)).hour() < FEED_INTERVAL_MIN) {
-              reply('投喂冷却中...');
-              return;
-            }
             todayFed.push(now);
-            user.feedTotal = strip(FEED_STEP + user.feedTotal);
-            await feed();
           }
+          user.feedTotal = strip(FEED_STEP + user.feedTotal);
+          await feed();
         }
         return;
       }
@@ -84,6 +84,7 @@ export default class PetModule extends Module {
         reply(`🐇现在有${data.pet.weight}kg重`);
         return;
       }
+      case TRIGGER_PREFIX:
       case helpTrigger: {
         reply(`宠物: 🐇\n用法: ${TRIGGER_PREFIX} ${_.keys(triggerMap).join('|')}`);
         return;
