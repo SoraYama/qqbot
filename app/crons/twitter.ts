@@ -26,7 +26,7 @@ const fetchTwitter = (bot: CQWebSocket) => async () => {
     bot('send_group_msg', {
       group_id: GROUP_ID,
       // group_id: TEST_GROUP_ID, // 小群
-      message: `「Twitter」\n${tweet}\n${lastTweet.date} #艦これ`,
+      message: `「Twitter」\n${tweet}\n${lastTweet.date}`,
     })
       .then((res) => console.log(res))
       .catch((e) => console.error(e));

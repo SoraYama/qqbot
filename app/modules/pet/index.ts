@@ -51,7 +51,9 @@ export default class PetModule extends Module {
       reply(`已投喂, 🐇很开心\n当前体重为${data.pet.weight}kg`);
     };
 
-    switch (_.trim(ctx.message)) {
+    const message = _.trim(ctx.message) as string;
+
+    switch (message) {
       case feedTrigger: {
         const user = data.user[ctx.sender?.user_id];
         if (!user) {
@@ -113,7 +115,7 @@ export default class PetModule extends Module {
         return;
       }
       default: {
-        if ((ctx.message as string).startsWith(TRIGGER_PREFIX)) {
+        if (message.startsWith(TRIGGER_PREFIX)) {
           reply('不能识别的指令');
         }
         return;

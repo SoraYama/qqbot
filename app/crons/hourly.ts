@@ -19,6 +19,7 @@ interface VoiceResponse {
 
 const KanMusuList = [
   144, // 夕立
+  148, // 武藏
   234, // 晓
 ];
 
