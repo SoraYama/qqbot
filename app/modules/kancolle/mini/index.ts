@@ -68,9 +68,11 @@ class MiniKancolleModule extends Module {
           reply(`还未建立角色哦, 请输入 ${PREFIX} ${ACTIONS.start} 来开始`);
           return;
         }
-        const ships = _(user.ships)
-          .map((s) => `${s.name} × ${s.amount}`)
-          .join('\n');
+        const ships = _.isEmpty(user.ships)
+          ? '[暂无舰娘]'
+          : _(user.ships)
+              .map((s) => `${s.name} × ${s.amount}`)
+              .join('\n');
         reply(`舰队详情:\n${ships}\n\n资源详情:\n${showResource(user.resource)}`);
         return;
       }
