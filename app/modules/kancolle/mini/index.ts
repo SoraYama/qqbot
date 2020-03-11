@@ -77,7 +77,7 @@ class MiniKancolleModule extends Module {
       case ACTIONS.help:
       default: {
         const actions = _.map(ACTIONS, (v) => v).join(' | ');
-        reply(`迷你砍口垒建造 可用指令有: /pet ${actions}`);
+        reply(`迷你砍口垒建造 可用指令为:\n${PREFIX} ${actions}`);
         return;
       }
     }
