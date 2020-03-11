@@ -9,6 +9,7 @@ import ItemImprovementModule from './app/modules/kancolle/item-improvement';
 import XiaoMModule from './app/modules/yuen/m';
 import Misc from './app/modules/yuen/misc';
 import PetModule from './app/modules/pet';
+import MiniKancolleModule from './app/modules/kancolle/mini';
 
 const envs = dotenv.config();
 
@@ -46,6 +47,7 @@ const loadModules = () => {
   new XiaoMModule(bot);
   new Misc(bot);
   new PetModule(bot);
+  new MiniKancolleModule(bot);
 };
 
 const doCrons = () => {
