@@ -25,11 +25,15 @@ export interface User {
   ships: Ship[];
 }
 
+const INIT_STORE_DATA = {
+  users: {},
+};
+
 const RESOURCE_MAX_LIMIT = 300000;
 
 class MiniKancolleStore extends Store<MiniKancolleData> {
   constructor() {
-    super('mini.json');
+    super('mini.json', INIT_STORE_DATA);
     _.each(_.keys(this.data!), (key: keyof MiniKancolleData) => {
       observe(this.data!, key, () => {
         this.syncData();
