@@ -63,6 +63,20 @@ class MiniKancolleStore extends Store<MiniKancolleData> {
     }
     this.data.users[userId] = user;
   }
+
+  getUserById(userId: number) {
+    const user = this.data?.users[userId];
+    if (!user) {
+      throw new Error(`没有此用户: ${userId}`);
+    }
+    return user;
+  }
+
+  @action
+  setUserDataById<T extends keyof User>(userId: number, key: T, data: User[T]) {
+    const user = this.getUserById(userId);
+    user[key] = data;
+  }
 }
 
 export default new MiniKancolleStore();

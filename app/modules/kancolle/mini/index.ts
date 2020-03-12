@@ -23,7 +23,7 @@ const ACTIONS = {
 const getUserInitData = (id: number): User => ({
   id,
   limit: 20000,
-  resource: [2000, 2000, 2000, 2000],
+  resource: [20000, 20000, 20000, 20000],
   secretary: null,
   ships: [],
 });
@@ -45,6 +45,41 @@ class MiniKancolleModule extends Module {
     };
     const user = store.data?.users[ctx.sender?.user_id];
     switch (action) {
+      case 'add-r': {
+        try {
+          if (ctx.user_id === ADMIN_ID) {
+            const [id, ...toAddResource] = params.map((r: string) => +r);
+            const user = store.getUserById(id);
+            store.setUserDataById(
+              id,
+              'resource',
+              user.resource.map((r, i) => r + (+toAddResource[i] || 0)),
+            );
+            store.syncData();
+            reply('资源添加成功');
+          } else {
+            reply('只有空山才能做到');
+          }
+        } catch (e) {
+          reply(e.message);
+        }
+        return;
+      }
+      case 'set-r': {
+        try {
+          if (ctx.user_id === ADMIN_ID) {
+            const [id, ...toAddResource] = params.map((r: string) => +r);
+            store.setUserDataById(id, 'resource', toAddResource);
+            store.syncData();
+            reply('资源设置成功');
+          } else {
+            reply('只有空山才能做到');
+          }
+        } catch (e) {
+          reply(e.message);
+        }
+        return;
+      }
       case ACTIONS.build: {
         if (!user) {
           reply(`还未建立角色哦, 请输入 ${PREFIX} ${ACTIONS.start} 来开始`);
