@@ -131,7 +131,7 @@ class MiniKancolleModule extends Module {
           : '空';
 
         const infoMap = {
-          镇守府等级: user.level,
+          镇守府等级: `${user.level}级`,
           舰队详情: ships,
           资源详情: showResource(user.resource),
           秘书舰: userSeceretaryStr,
