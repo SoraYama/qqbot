@@ -42,11 +42,11 @@ bot
   });
 
 const loadModules = () => {
-  // new RepeatModule(bot);
-  // new ItemImprovementModule(bot);
-  // new XiaoMModule(bot);
-  // new Misc(bot);
-  // new PetModule(bot);
+  new RepeatModule(bot);
+  new ItemImprovementModule(bot);
+  new XiaoMModule(bot);
+  new Misc(bot);
+  new PetModule(bot);
   new MiniKancolleModule(bot);
 };
 

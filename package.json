@@ -9,7 +9,7 @@
     "init-user": "ts-node ./scripts/set-user-filed.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "SoraYama",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.19.2",
