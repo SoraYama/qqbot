@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "ts-node-dev index.ts",
     "start": "ts-node index.ts -P ./tsconfig.json",
+    "init-user": "ts-node ./scripts/set-user-filed.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

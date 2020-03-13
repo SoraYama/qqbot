@@ -12,18 +12,14 @@ import { ADMIN_ID } from '../../../configs';
 import dropConfig from './assets/drop';
 import rewardConfig, { RewardType } from './assets/reward';
 import helpText from './assets/help';
-
-const PREFIX = '/fleet';
-const BUILD_RESOURCE_MAX = 7000;
-const LEAST_RESOURCE = [1500, 1500, 2000, 1000];
-const ACTIONS = {
-  build: 'build',
-  me: 'me',
-  help: 'help',
-  start: 'start',
-  drop: 'drop',
-  sec: 'sec',
-};
+import {
+  PREFIX,
+  ACTIONS,
+  UPGRADE_NEED_AMOUNT,
+  MAX_HOME_LEVEL,
+  LEAST_RESOURCE,
+  BUILD_RESOURCE_MAX,
+} from './constants';
 
 const getUserInitData = (id: number): User => ({
   id,
@@ -31,6 +27,7 @@ const getUserInitData = (id: number): User => ({
   resource: [20000, 20000, 20000, 20000],
   secretary: null,
   ships: [],
+  level: 1,
 });
 
 class MiniKancolleModule extends Module {
@@ -103,6 +100,10 @@ class MiniKancolleModule extends Module {
       }
 
       case ACTIONS.drop: {
+        if (!user) {
+          reply(`还未建立角色哦, 请输入 ${PREFIX} ${ACTIONS.start} 来开始`);
+          return;
+        }
         const [...shipIds] = params;
         if (_(shipIds).some((id) => !_.isInteger(+id))) {
           reply('输入错误, 需要输入舰娘ID用空格分开哦');
@@ -128,11 +129,14 @@ class MiniKancolleModule extends Module {
         const userSeceretaryStr = user.secretary
           ? showShip(findUserShipById(user.secretary, user)!)
           : '空';
-        reply(
-          `舰队详情:\n${ships}\n\n资源详情:\n${showResource(
-            user.resource,
-          )}\n\n秘书舰:\n${userSeceretaryStr}`,
-        );
+
+        const infoMap = {
+          镇守府等级: user.level,
+          舰队详情: ships,
+          资源详情: showResource(user.resource),
+          秘书舰: userSeceretaryStr,
+        };
+        reply(_.map(infoMap, (v, k) => `${k}:\n${v}`).join('\n\n'));
         return;
       }
 
@@ -183,6 +187,29 @@ class MiniKancolleModule extends Module {
           return;
         }
         reply('暂时没有这个指令');
+        return;
+      }
+
+      case ACTIONS.upgrade: {
+        if (!user) {
+          reply(`还未建立角色哦, 请输入 ${PREFIX} ${ACTIONS.start} 来开始`);
+          return;
+        }
+        const userMaruyu = findUserShipById(1000, user);
+        if (!userMaruyu || userMaruyu.amount < UPGRADE_NEED_AMOUNT) {
+          reply(`马路油数量不足哦`);
+          return;
+        }
+        if (user.level >= MAX_HOME_LEVEL) {
+          reply(`镇守府已到达最高等级啦`);
+          return;
+        }
+        if (this.decShip(user, 1000, UPGRADE_NEED_AMOUNT) === false) {
+          return;
+        }
+        user.level = Math.min(user.level + 1, MAX_HOME_LEVEL);
+        store.syncData();
+        reply(`镇守府升级啦, 当前等级为 ${user.level}`);
         return;
       }
 
@@ -300,6 +327,24 @@ class MiniKancolleModule extends Module {
         id: shipInfo.id,
       };
       user.ships = [...user.ships, ship];
+    }
+    store.syncData();
+  }
+
+  private decShip(user: User, shipId: number, amount = 1) {
+    const targetShip = findUserShipById(shipId, user);
+    if (!targetShip) {
+      return false;
+    }
+    if (targetShip.amount - amount < 0) {
+      return false;
+    }
+    if (targetShip.amount === amount) {
+      user.ships = _(user.ships)
+        .without(targetShip)
+        .value();
+    } else {
+      targetShip.amount -= amount;
     }
     store.syncData();
   }

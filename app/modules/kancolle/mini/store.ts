@@ -2,6 +2,12 @@ import { action, observe } from 'mobx';
 import _ from 'lodash';
 
 import Store from '../../../utils/store';
+import {
+  AL_RISING_STEP,
+  OTHER_RISING_STEP,
+  INIT_STORE_DATA,
+  RESOURCE_MAX_LIMIT,
+} from './constants';
 
 export interface IdMap<T> {
   [key: number]: T;
@@ -23,13 +29,8 @@ export interface User {
   resource: number[];
   secretary: number | null;
   ships: Ship[];
+  level: number;
 }
-
-const INIT_STORE_DATA = {
-  users: {},
-};
-
-const RESOURCE_MAX_LIMIT = 300000;
 
 class MiniKancolleStore extends Store<MiniKancolleData> {
   constructor() {
@@ -47,7 +48,11 @@ class MiniKancolleStore extends Store<MiniKancolleData> {
       _.each(this.data?.users, (user) => {
         user.resource = _.map(
           user.resource,
-          (r, i) => (r = Math.min(r + (i === 3 ? 10 : 30), RESOURCE_MAX_LIMIT)),
+          (r, i) =>
+            (r = Math.min(
+              r + (i === 3 ? AL_RISING_STEP : OTHER_RISING_STEP) * user.level,
+              RESOURCE_MAX_LIMIT,
+            )),
         );
       });
       this.syncData();
