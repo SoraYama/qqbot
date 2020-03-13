@@ -131,7 +131,7 @@ class MiniKancolleModule extends Module {
           : '空';
 
         const infoMap = {
-          镇守府等级: `${user.level}级`,
+          镇守府等级: `${new Array(user.level).fill('').map(() => '★')}`,
           舰队详情: ships,
           资源详情: showResource(user.resource),
           秘书舰: userSeceretaryStr,
@@ -222,6 +222,9 @@ class MiniKancolleModule extends Module {
   };
 
   private drop(shipIds: number[], user: User) {
+    if (shipIds.length === 0) {
+      return '参数需要舰娘ID';
+    }
     const replyMsgArr = _.map(shipIds, (id) => {
       const dropShip = _.find(user.ships, (s) => s.id === id);
       if (!dropShip) {
