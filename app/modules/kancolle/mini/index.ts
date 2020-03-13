@@ -84,7 +84,7 @@ class MiniKancolleModule extends Module {
           reply(`还未建立角色哦, 请输入 ${PREFIX} ${ACTIONS.start} 来开始`);
           return;
         }
-        const msg = await this.build(params, user!);
+        const msg = await this.build(params, user);
         reply(msg);
         return;
       }
@@ -293,10 +293,6 @@ class MiniKancolleModule extends Module {
       return `资源不足, 目前资源为:\n${showResource(user.resource)}`;
     }
 
-    if (user.id !== ADMIN_ID) {
-      user.resource = _.map(user.resource, (r, i) => r - inputResource[i]);
-    }
-
     const group = pickRandom(groupConfig);
     const filteredByGroup = _(shipsConfig).filter((ship) => group.ships.includes(ship.id));
     const filteredByResource = filteredByGroup.filter((item) =>
@@ -314,7 +310,20 @@ class MiniKancolleModule extends Module {
       })
       .value();
     const selectedShip = pickRandom(weightMapped);
+    if (!selectedShip) {
+      console.log(
+        'selectedShip:',
+        selectedShip,
+        'weightMapped:',
+        weightMapped,
+        'filteredBySecretary:',
+        filteredBySeceretary,
+      );
+    }
     this.addShip(user, selectedShip.id);
+    if (user.id !== ADMIN_ID) {
+      user.resource = _.map(user.resource, (r, i) => r - inputResource[i]);
+    }
     return `舰娘「${selectedShip.name}」加入了舰队~`;
   }
 
