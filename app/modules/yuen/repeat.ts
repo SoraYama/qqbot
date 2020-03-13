@@ -10,15 +10,17 @@ class RepeatModule extends Module {
   }
 
   public onGroupMessage: MessageEventListener = (e, ctx) => {
+    if (/^\//.test(ctx.message.trim())) {
+      return;
+    }
     if (this.messageQueue.length <= 0) {
       this.messageQueue.push(ctx.message);
     } else if (ctx.message !== this.messageQueue[this.messageQueue.length - 1]) {
       this.resetQueue();
     } else {
       this.messageQueue.push(ctx.message);
-      if (this.messageQueue.length >= 2) {
+      if (this.messageQueue.length === 2) {
         e.setMessage(ctx.message);
-        this.resetQueue();
       }
     }
   };

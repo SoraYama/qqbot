@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-interface RandomItem {
+export interface RandomItem {
   weight: number;
 }
 

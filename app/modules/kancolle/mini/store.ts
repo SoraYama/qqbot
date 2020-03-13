@@ -77,6 +77,23 @@ class MiniKancolleStore extends Store<MiniKancolleData> {
     const user = this.getUserById(userId);
     user[key] = data;
   }
+
+  @action
+  dropUserShip(userId: number, shipId: number) {
+    const user = this.getUserById(userId);
+    const ship = _.find(user.ships, (s) => s.id === shipId);
+    if (!ship) {
+      return;
+    }
+    if (ship.amount > 1) {
+      ship.amount--;
+    } else {
+      user.ships = _(user.ships)
+        .without(ship)
+        .value();
+    }
+    this.syncData();
+  }
 }
 
 export default new MiniKancolleStore();
