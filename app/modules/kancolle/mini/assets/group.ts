@@ -41,6 +41,6 @@ export default [
   {
     group: 4,
     weight: 1,
-    ships: [1033],
+    ships: [1033, 1000, 1005, 1006, 1008, 1003],
   },
 ];

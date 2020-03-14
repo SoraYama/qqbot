@@ -45,8 +45,8 @@ export default [
     id: 1006,
     name: 'Zara',
     resource: [3000, 4000, 4000, 2000],
-    seceretary: [2003],
-    weight: 13,
+    seceretary: [2003, 1007],
+    weight: 40,
   },
   {
     id: 1007,
@@ -59,8 +59,8 @@ export default [
     id: 1008,
     name: 'Pola',
     resource: [3000, 4000, 4000, 2000],
-    seceretary: [2003],
-    weight: 10,
+    seceretary: [2003, 1006],
+    weight: 40,
   },
   {
     id: 1009,
@@ -74,7 +74,7 @@ export default [
     name: '神威',
     resource: [3000, 2000, 5000, 3500],
     seceretary: null,
-    weight: 15,
+    weight: 20,
   },
   {
     id: 1011,

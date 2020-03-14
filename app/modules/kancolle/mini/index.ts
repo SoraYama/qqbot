@@ -131,7 +131,10 @@ class MiniKancolleModule extends Module {
           : '空';
 
         const infoMap = {
-          镇守府等级: `${new Array(user.level).fill('').map(() => '★')}`,
+          镇守府等级: `${new Array(user.level)
+            .fill('')
+            .map(() => '★')
+            .join('')}`,
           舰队详情: ships,
           资源详情: showResource(user.resource),
           秘书舰: userSeceretaryStr,
@@ -175,7 +178,8 @@ class MiniKancolleModule extends Module {
       case ACTIONS.help: {
         const [command] = params;
         if (!command) {
-          reply('请加上指令名');
+          const actions = _.map(ACTIONS, (v) => v).join(' | ');
+          reply(`请加上指令名${actions}, 比如说 "${PREFIX} ${ACTIONS.help} ${ACTIONS.build}"`);
           return;
         }
         if (
@@ -311,14 +315,19 @@ class MiniKancolleModule extends Module {
       .value();
     const selectedShip = pickRandom(weightMapped);
     if (!selectedShip) {
-      console.log(
+      console.warn(
+        'group:',
+        group,
+        'filteredByResource',
+        filteredByResource.value(),
         'selectedShip:',
         selectedShip,
         'weightMapped:',
         weightMapped,
         'filteredBySecretary:',
-        filteredBySeceretary,
+        filteredBySeceretary.value(),
       );
+      return `妖精们不知道什么原因罢工了, 资源还给你> <`;
     }
     this.addShip(user, selectedShip.id);
     if (user.id !== ADMIN_ID) {
