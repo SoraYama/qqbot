@@ -44,19 +44,19 @@ const rewardConfig = [
     id: 1100,
     type: RewardType.ship,
     reward: 1,
-    weight: 10,
+    weight: 1,
   },
   {
     id: 1101,
     type: RewardType.ship,
     reward: 2,
-    weight: 20,
+    weight: 30,
   },
   {
     id: 1102,
     type: RewardType.ship,
     reward: 3,
-    weight: 80,
+    weight: 100,
   },
   {
     id: 2000,
