@@ -10,7 +10,9 @@ WORKDIR /app
 
 COPY ./package.json ./package.json
 
-RUN yarn
+COPY ./yarn.lock ./yarn.lock
+
+RUN yarn --registry=https://registry.npm.taobao.org
 
 COPY . .
 
