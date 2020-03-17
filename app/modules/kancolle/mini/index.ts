@@ -252,6 +252,10 @@ class MiniKancolleModule extends Module {
           reply(`马路油数量不足哦 (${userMaruyu?.amount || 0}/${levelInfo.upgradeRequirement})`);
           return;
         }
+        if (userMaruyu.amount === levelInfo.upgradeRequirement && user.secretary === 1000) {
+          reply(`不能拆除作为秘书舰的まるゆ哦~ 请先将秘书舰换成别人`);
+          return;
+        }
         if (user.level >= MAX_HOME_LEVEL) {
           reply(`镇守府已到达最高等级啦`);
           return;
@@ -261,7 +265,7 @@ class MiniKancolleModule extends Module {
         }
         user.level = Math.min(user.level + 1, MAX_HOME_LEVEL);
         store.syncData();
-        reply(`镇守府升级啦, 当前等级为 ${user.level}`);
+        reply(`镇守府升级啦, 当前等级为 ${user.level}级`);
         return;
       }
 
