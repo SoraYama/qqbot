@@ -238,6 +238,13 @@ export default [
     weight: 10,
   },
   {
+    id: 1034,
+    name: '明石',
+    resource: [1500, 1500, 2000, 1000],
+    seceretary: null,
+    weight: 25,
+  },
+  {
     id: 2000,
     name: 'Z1',
     resource: [1500, 1500, 2000, 1000],

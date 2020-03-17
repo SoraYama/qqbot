@@ -12,7 +12,15 @@ import { ADMIN_ID, isDev, TEST_GROUP_ID } from '../../../configs';
 import dropConfig from './assets/drop';
 import rewardConfig, { RewardType } from './assets/reward';
 import helpText from './assets/help';
-import { PREFIX, ACTIONS, MAX_HOME_LEVEL, LEAST_RESOURCE, BUILD_RESOURCE_MAX } from './constants';
+import {
+  PREFIX,
+  ACTIONS,
+  MAX_HOME_LEVEL,
+  LEAST_RESOURCE,
+  BUILD_RESOURCE_MAX,
+  ResourceType,
+  RESOURCE_NAMES,
+} from './constants';
 import levelConfig from './assets/level';
 
 const getUserInitData = (id: number): User => ({
@@ -69,6 +77,26 @@ class MiniKancolleModule extends Module {
             store.setUserDataById(id, 'resource', toAddResource);
             store.syncData();
             reply('资源设置成功');
+          } else {
+            reply('只有空山才能做到');
+          }
+        } catch (e) {
+          reply(e.message);
+        }
+        return;
+      }
+
+      case 'add-s': {
+        try {
+          if (ctx.user_id === ADMIN_ID) {
+            const [id, toAddShipId] = params.map((r: string) => +r);
+            const targetUser = store.data?.users[id];
+            if (!targetUser) {
+              reply('没有这个用户');
+              return;
+            }
+            this.addShip(targetUser, toAddShipId);
+            reply('舰船添加成功');
           } else {
             reply('只有空山才能做到');
           }
@@ -231,6 +259,75 @@ class MiniKancolleModule extends Module {
         return;
       }
 
+      case ACTIONS.trade: {
+        if (!user) {
+          reply(`还未建立角色哦, 请输入 ${PREFIX} ${ACTIONS.start} 来开始`);
+          return;
+        }
+        if (params.length < 3) {
+          reply(
+            `参数输入错误, 应该为 "${PREFIX} ${ACTIONS.trade} <要交换的资源类型> <目标资源类型> <要交换的数量>"`,
+          );
+          return;
+        }
+        if (user.secretary !== 1034) {
+          reply(`需要${showShip(_.find(shipsConfig, (s) => s.name === '明石')!)}作为旗舰哦`);
+          return;
+        }
+        const [sourceType, targetType, sourceAmount] = params.map((p: string) => +p);
+        if (
+          _.some(
+            [sourceType, targetType],
+            (t) => !_.inRange(t, ResourceType.oil - 1, ResourceType.al + 1),
+          )
+        ) {
+          reply(`资源类型输入错误: 1, 2, 3, 4 分别对应 油, 弹, 钢, 铝`);
+          return;
+        }
+        if (!_.isInteger(sourceAmount)) {
+          reply(`请输入整数作为要交换的资源量`);
+          return;
+        }
+        const userSourceAmount = user.resource[sourceType - 1];
+        if (sourceAmount > userSourceAmount) {
+          reply(`抱歉你没有那么多的${RESOURCE_NAMES[sourceType - 1]}(${userSourceAmount})`);
+          return;
+        }
+
+        const tradeRate = this.getTradeRate(sourceType);
+        const levelInfo = _.find(levelConfig, (info) => info.level === user.level)!;
+        const targetAmount = Math.round(
+          sourceAmount * tradeRate[targetType - 1] * (1 - levelInfo.tradeTaxRate),
+        );
+        const toCalcResource = [0, 0, 0, 0];
+        toCalcResource[targetType - 1] = targetAmount;
+        toCalcResource[sourceType - 1] = -sourceAmount;
+        this.addResource(user, toCalcResource);
+        reply(
+          `明老板很开心, 收下了你的 ${sourceAmount}${
+            RESOURCE_NAMES[sourceType - 1]
+          } 并给你了 ${targetAmount}${RESOURCE_NAMES[targetType - 1]}${
+            levelInfo.tradeTaxRate === 0
+              ? ''
+              : `\n(顺便一提明老板收取了 ${sourceAmount * levelInfo.tradeTaxRate}${
+                  RESOURCE_NAMES[sourceType - 1]
+                } 作为手续费~)`
+          }`,
+        );
+        return;
+      }
+
+      case ACTIONS.tradeRate: {
+        const [sourceType] = params.map((r: string) => +r);
+        if (!_.inRange(sourceType, 0, 5)) {
+          reply(`资源类型输入错误: 1, 2, 3, 4 分别对应 油, 弹, 钢, 铝`);
+          return;
+        }
+        const rate = this.getTradeRate(sourceType);
+        reply(`目前${RESOURCE_NAMES[sourceType - 1]}对其他资源的的交换比率为[${rate.join(', ')}]`);
+        return;
+      }
+
       default: {
         const actions = _.map(ACTIONS, (v) => v).join(' | ');
         reply(`欢迎来玩迷你砍口垒模拟大建\n 可用的指令为:\n${PREFIX} ${actions}`);
@@ -238,6 +335,16 @@ class MiniKancolleModule extends Module {
       }
     }
   };
+
+  private getTradeRate(type: ResourceType) {
+    const resourceTotalAmount = _(store.data?.users)
+      .map((user) => user.resource)
+      .reduce((prev, curr) => _.map(prev, (pr, i) => pr + curr[i]), [0, 0, 0, 0]);
+    const resourceTradeRate = _(resourceTotalAmount).map((r) =>
+      Number((r / resourceTotalAmount[type - 1]).toFixed(3)),
+    );
+    return resourceTradeRate.value();
+  }
 
   private drop(shipIds: number[], user: User) {
     if (shipIds.length === 0) {

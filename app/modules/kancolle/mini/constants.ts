@@ -18,4 +18,13 @@ export const ACTIONS = {
   drop: 'drop',
   sec: 'sec',
   upgrade: 'upgrade',
+  trade: 'trade',
+  tradeRate: 'trade-rate',
 };
+export const enum ResourceType {
+  oil = 1,
+  armor,
+  steel,
+  al,
+}
+export const RESOURCE_NAMES = ['油', '弹', '钢', '铝'];
