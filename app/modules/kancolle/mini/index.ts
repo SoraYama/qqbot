@@ -167,14 +167,20 @@ class MiniKancolleModule extends Module {
           ? showShip(findUserShipById(user.secretary, user)!)
           : '空';
 
+        const userLevelInfo = _.find(levelConfig, (info) => user.level === info.level)!;
+
         const infoMap = {
           镇守府等级: `${new Array(user.level)
             .fill('')
             .map(() => '★')
             .join('')}`,
-          舰队详情: ships,
           资源详情: showResource(user.resource),
           秘书舰: userSeceretaryStr,
+          资源上限: userLevelInfo.limit,
+          资源增长速度: `[${userLevelInfo.accumulateVelocity.join(', ')}]`,
+          升级所需まるゆ数量: `${userLevelInfo.upgradeRequirement}个`,
+          资源兑换手续费率: `${userLevelInfo.tradeTaxRate * 100}%`,
+          舰队详情: ships,
         };
         reply(_.map(infoMap, (v, k) => `${k}:\n${v}`).join('\n\n'));
         return;
@@ -264,14 +270,14 @@ class MiniKancolleModule extends Module {
           reply(`还未建立角色哦, 请输入 ${PREFIX} ${ACTIONS.start} 来开始`);
           return;
         }
+        if (user.secretary !== 1034) {
+          reply(`需要${showShip(_.find(shipsConfig, (s) => s.name === '明石')!)}作为旗舰哦`);
+          return;
+        }
         if (params.length < 3) {
           reply(
             `参数输入错误, 应该为 "${PREFIX} ${ACTIONS.trade} <要交换的资源类型> <目标资源类型> <要交换的数量>"`,
           );
-          return;
-        }
-        if (user.secretary !== 1034) {
-          reply(`需要${showShip(_.find(shipsConfig, (s) => s.name === '明石')!)}作为旗舰哦`);
           return;
         }
         const [sourceType, targetType, sourceAmount] = params.map((p: string) => +p);
