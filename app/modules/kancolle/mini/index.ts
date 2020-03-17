@@ -5,21 +5,15 @@ import Module from '../../module';
 import { MessageEventListener } from '../../../../typings/cq-websocket';
 import pickRandom from '../../../utils/pickRandom';
 import shipsConfig from './assets/ships';
-import groupConfig from './assets/group';
+import groupConfig from './assets/build-group';
 import store, { User } from './store';
 import { showResource, showShip, weightBalance, findUserShipById } from './utils';
-import { ADMIN_ID } from '../../../configs';
+import { ADMIN_ID, isDev, TEST_GROUP_ID } from '../../../configs';
 import dropConfig from './assets/drop';
 import rewardConfig, { RewardType } from './assets/reward';
 import helpText from './assets/help';
-import {
-  PREFIX,
-  ACTIONS,
-  UPGRADE_NEED_AMOUNT,
-  MAX_HOME_LEVEL,
-  LEAST_RESOURCE,
-  BUILD_RESOURCE_MAX,
-} from './constants';
+import { PREFIX, ACTIONS, MAX_HOME_LEVEL, LEAST_RESOURCE, BUILD_RESOURCE_MAX } from './constants';
+import levelConfig from './assets/level';
 
 const getUserInitData = (id: number): User => ({
   id,
@@ -37,6 +31,11 @@ class MiniKancolleModule extends Module {
   }
 
   public onGroupMessage: MessageEventListener = async (e, ctx) => {
+    if (isDev) {
+      if (ctx.group_id !== TEST_GROUP_ID) {
+        return;
+      }
+    }
     const [prefix, action, ...params] = ctx.message.trim().split(' ');
     if (prefix !== PREFIX) {
       return;
@@ -84,8 +83,18 @@ class MiniKancolleModule extends Module {
           reply(`还未建立角色哦, 请输入 ${PREFIX} ${ACTIONS.start} 来开始`);
           return;
         }
-        const msg = await this.build(params, user);
-        reply(msg);
+        if (params.length < 4) {
+          reply('投入资源输入错误, 请按照 "油, 弹, 钢, 铝, 次数" 的顺序输入并用空格分开');
+          return;
+        }
+        const resource = params.slice(0, 4);
+        const repeatTimes = +params[4] || 1;
+        const msgs: string[] = [];
+        for (let i = 0; i < repeatTimes; i++) {
+          const msg = this.build(resource, user);
+          msgs.push(msg);
+        }
+        reply(msgs.join('\n'));
         return;
       }
 
@@ -199,16 +208,21 @@ class MiniKancolleModule extends Module {
           reply(`还未建立角色哦, 请输入 ${PREFIX} ${ACTIONS.start} 来开始`);
           return;
         }
+        const levelInfo = _(levelConfig).find((info) => info.level === user.level);
+        if (!levelInfo) {
+          reply(`啊哦你的镇守府出问题了, 请联系空山`);
+          return;
+        }
         const userMaruyu = findUserShipById(1000, user);
-        if (!userMaruyu || userMaruyu.amount < UPGRADE_NEED_AMOUNT) {
-          reply(`马路油数量不足哦`);
+        if (!userMaruyu || userMaruyu.amount < levelInfo.upgradeRequirement) {
+          reply(`马路油数量不足哦 (${userMaruyu?.amount || 0}/${levelInfo.upgradeRequirement})`);
           return;
         }
         if (user.level >= MAX_HOME_LEVEL) {
           reply(`镇守府已到达最高等级啦`);
           return;
         }
-        if (this.decShip(user, 1000, UPGRADE_NEED_AMOUNT) === false) {
+        if (this.decShip(user, 1000, levelInfo.upgradeRequirement) === false) {
           return;
         }
         user.level = Math.min(user.level + 1, MAX_HOME_LEVEL);
@@ -282,7 +296,7 @@ class MiniKancolleModule extends Module {
     return replyMsgArr.join('\n\n');
   }
 
-  private async build(resourceString: string[] = [], user: User) {
+  private build(resourceString: string[] = [], user: User) {
     if (resourceString.length !== 4) {
       return '投入资源输入错误, 请按照油, 弹, 钢, 铝的顺序输入并用空格分开';
     }

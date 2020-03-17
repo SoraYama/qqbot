@@ -2,12 +2,8 @@ import { action, observe } from 'mobx';
 import _ from 'lodash';
 
 import Store from '../../../utils/store';
-import {
-  AL_RISING_STEP,
-  OTHER_RISING_STEP,
-  INIT_STORE_DATA,
-  RESOURCE_MAX_LIMIT,
-} from './constants';
+import { INIT_STORE_DATA } from './constants';
+import levelConfig from './assets/level';
 
 export interface IdMap<T> {
   [key: number]: T;
@@ -46,13 +42,10 @@ class MiniKancolleStore extends Store<MiniKancolleData> {
   private startResourceAccumulating() {
     setInterval(() => {
       _.each(this.data?.users, (user) => {
+        const levelInfo = _(levelConfig).find((info) => info.level === user.level)!;
         user.resource = _.map(
           user.resource,
-          (r, i) =>
-            (r = Math.min(
-              r + (i === 3 ? AL_RISING_STEP : OTHER_RISING_STEP) * user.level,
-              RESOURCE_MAX_LIMIT,
-            )),
+          (r, i) => (r = Math.min(r + levelInfo.accumulateVelocity[i], levelInfo.limit)),
         );
       });
       this.syncData();

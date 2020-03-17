@@ -1,4 +1,4 @@
-import { UPGRADE_NEED_AMOUNT, MAX_HOME_LEVEL } from '../constants';
+import { MAX_HOME_LEVEL } from '../constants';
 
 const helpText = {
   help: '显示某个帮助信息, 参数为指令',
@@ -8,7 +8,7 @@ const helpText = {
   sec: '置换秘书舰, 后面参数为舰娘ID',
   drop: '解体舰娘来换取报酬, 后面参数为舰娘们的ID, 可以一次解体多个',
   me: '查询你当前的信息',
-  upgrade: `拆解${UPGRADE_NEED_AMOUNT}个まるゆ来升级镇守府, 高等级镇守府资源回复速度更快 [注: 镇守府等级最高为${MAX_HOME_LEVEL}级]`,
+  upgrade: `拆解まるゆ来升级镇守府, 高等级镇守府资源回复速度更快 [注: 镇守府等级最高为${MAX_HOME_LEVEL}级]`,
 };
 
 export default helpText;

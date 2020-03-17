@@ -1,7 +1,9 @@
 // 大群
 export const GROUP_ID = 915378511;
 // 测试小群
-export const TEST_GROUP_ID = 956475298;
+export const TEST_GROUP_ID = 1080079422;
+
+export const isDev = process.env.NODE_ENV === 'development';
 
 export const nameList = [
   '水虹',

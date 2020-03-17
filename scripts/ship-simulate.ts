@@ -4,7 +4,7 @@ import fs from 'fs-extra';
 import path from 'path';
 
 import pickRandom from '../app/utils/pickRandom';
-import groupConfig from '../app/modules/kancolle/mini/assets/group';
+import groupConfig from '../app/modules/kancolle/mini/assets/build-group';
 import shipsConfig from '../app/modules/kancolle/mini/assets/ships';
 
 const argv = yargs.options({
