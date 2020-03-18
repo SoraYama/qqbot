@@ -29,6 +29,9 @@ import {
 } from './constants';
 import User from './store/user';
 import strip from '../../../utils/strip';
+import Logging from '../../../utils/logger';
+
+const logger = Logging.getLogger('mini');
 
 class MiniKancolleModule extends Module {
   constructor(bot: CQWebSocket) {
@@ -164,6 +167,7 @@ class MiniKancolleModule extends Module {
         const ships = _.isEmpty(user.ships)
           ? '[暂无舰娘]'
           : _(user.ships)
+              .sortBy('id')
               .map((s) => `${showShip(s.id)} × ${s.amount}`)
               .join('\n');
         const userSeceretaryStr = user.secretary ? showShip(user.secretary) : '空';
@@ -203,7 +207,6 @@ class MiniKancolleModule extends Module {
         }
         if (inputSeceretary === 'null') {
           user.setSecretary(null);
-          // store.syncData();
           reply(`秘书舰已置空`);
           return;
         }
@@ -213,7 +216,6 @@ class MiniKancolleModule extends Module {
         } catch (e) {
           reply(e.message);
         }
-        // store.syncData();
         return;
       }
 
@@ -316,6 +318,11 @@ class MiniKancolleModule extends Module {
         toCalcResource[targetType - 1] = targetAmount;
         toCalcResource[sourceType - 1] = -sourceAmount;
         user.addResource(toCalcResource);
+        logger.info(
+          `交易结果 - ${user.id} ${sourceType} ${targetType} [${tradeRate.join(
+            ', ',
+          )}] ${sourceAmount} ${targetAmount}`,
+        );
         reply(
           `明老板很开心, 收下了你的 ${sourceAmount}${
             RESOURCE_NAMES[sourceType - 1]
@@ -389,6 +396,7 @@ class MiniKancolleModule extends Module {
       );
 
       if (reward.type === RewardType.resource) {
+        logger.info(`解体结果 - ${user.id} ${id} ${reward.type} ${reward.reward}`);
         user.addResource(reward.reward as number[]);
         return `解体${showShip(id)}成功!\n获得资源:\n${showResource(reward.reward as number[])}`;
       } else if (reward.type === RewardType.ship) {
@@ -399,6 +407,7 @@ class MiniKancolleModule extends Module {
               .ships.map((shipId) => _(shipsConfig).find((s) => s.id === shipId)!),
           );
           user.addShip(rewardShip.id);
+          logger.info(`解体结果 - ${user.id} ${id} ${reward.type} ${rewardShip.name}`);
           return `解体${showShip(id)}成功!\n妖精们利用拆卸下来的零件重新建造成了${showShip(
             rewardShip.id,
           )}~`;
@@ -407,8 +416,9 @@ class MiniKancolleModule extends Module {
             user.addShip(r);
           });
           const shipNames = _(reward.reward)
-            .map((id) => _.find(shipsConfig, (s) => s.id === id)!.name)
+            .map((id) => findConfigShipById(id)!.name)
             .join('、');
+          logger.info(`解体结果 - ${user.id} ${id} ${reward.type} ${shipNames}`);
           return `解体${showShip(id)}成功!\n妖精们利用拆卸下来的零件重新建造成了${shipNames}~`;
         }
       }
@@ -450,7 +460,7 @@ class MiniKancolleModule extends Module {
       .value();
     const selectedShip = pickRandom(weightMapped);
     if (!selectedShip) {
-      console.warn(
+      logger.warn(
         'group:',
         group,
         'filteredByResource',
@@ -469,6 +479,7 @@ class MiniKancolleModule extends Module {
       console.log(user.id, ADMIN_ID);
       user.addResource(_.map(inputResource, (r) => -r));
     }
+    logger.info(`建造结果 - ${user.id} [${inputResource.join(', ')}] ${selectedShip.name}`);
     return `舰娘${showShip(selectedShip.id)}加入了舰队~`;
   }
 }

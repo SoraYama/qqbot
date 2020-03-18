@@ -138,9 +138,9 @@ class User {
     this.level++;
   }
 
-  public getShipById(shipId: number) {
+  public getShipById = _.memoize((shipId: number) => {
     return _(this.ships).find((s) => s.id === shipId);
-  }
+  });
 
   public dispose() {
     this.disposeReaction();

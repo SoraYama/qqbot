@@ -23,9 +23,9 @@ export const weightBalance = <T extends RandomItem>(list: T[], figure: number) =
   return res;
 };
 
-export const findConfigShipById = (shipId: number) => {
+export const findConfigShipById = _.memoize((shipId: number) => {
   return _.find(shipsConfig, (s) => s.id === shipId);
-};
+});
 
 export const computeExtraWeight = (requiredResource: number[], inputResource: number[]) => {
   let extraWeight = 0;
