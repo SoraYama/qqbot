@@ -1,4 +1,5 @@
 import levelConfig from './assets/level';
+import Logging from '../../../utils/logging';
 
 export const AL_RISING_STEP = 10;
 export const OTHER_RISING_STEP = 30;
@@ -28,3 +29,4 @@ export const enum ResourceType {
   al,
 }
 export const RESOURCE_NAMES = ['油', '弹', '钢', '铝'];
+export const logger = Logging.getLogger('mini');

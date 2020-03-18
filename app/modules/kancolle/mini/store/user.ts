@@ -50,6 +50,9 @@ class User {
       () => {
         this.store.syncData();
       },
+      {
+        delay: 10,
+      },
     );
   }
 
@@ -138,9 +141,9 @@ class User {
     this.level++;
   }
 
-  public getShipById = _.memoize((shipId: number) => {
+  public getShipById(shipId: number) {
     return _(this.ships).find((s) => s.id === shipId);
-  });
+  }
 
   public dispose() {
     this.disposeReaction();

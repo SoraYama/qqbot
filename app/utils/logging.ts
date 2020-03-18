@@ -1,7 +1,7 @@
 import log4js from 'log4js';
 import path from 'path';
 
-const logger = log4js.configure({
+const Logging = log4js.configure({
   appenders: {
     mini: { type: 'file', filename: path.resolve(global.APP_PATH, 'logs', 'mini.log') },
     console: { type: 'stdout' },
@@ -23,4 +23,4 @@ const logger = log4js.configure({
   },
 });
 
-export default logger;
+export default Logging;

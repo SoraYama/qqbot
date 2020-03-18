@@ -7,6 +7,7 @@
     "dev": "ts-node-dev index.ts",
     "start": "export NODE_ENV=production && ts-node index.ts -P ./tsconfig.json",
     "init-user": "ts-node ./scripts/set-user-filed.ts",
+    "lint": "eslint --ext .ts --fix ./app",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "SoraYama",
@@ -41,9 +42,22 @@
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
+    "husky": "^4.2.3",
+    "lint-staged": "^10.0.8",
     "prettier": "^1.19.1",
     "ts-node-dev": "^1.0.0-pre.44",
     "typescript": "^3.7.4",
     "yargs": "^15.3.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts}": [
+      "eslint --fix",
+      "git add"
+    ]
   }
 }

@@ -1,4 +1,4 @@
-export default [
+const buildingGroup = [
   {
     group: 1,
     weight: 10,
@@ -44,3 +44,5 @@ export default [
     ships: [1033, 1000, 1005, 1006, 1008, 1003],
   },
 ];
+
+export default buildingGroup;
