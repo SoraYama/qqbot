@@ -1,10 +1,10 @@
-export default [
+const shipsConfig = [
   {
     id: 1000,
     name: 'まるゆ',
     resource: [1500, 1500, 2000, 1000],
     seceretary: null,
-    weight: 15,
+    weight: 5,
   },
   {
     id: 1001,
@@ -280,3 +280,5 @@ export default [
     weight: 0,
   },
 ];
+
+export default shipsConfig;

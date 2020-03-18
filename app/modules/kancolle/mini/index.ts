@@ -6,8 +6,14 @@ import { MessageEventListener } from '../../../../typings/cq-websocket';
 import pickRandom from '../../../utils/pickRandom';
 import shipsConfig from './assets/ships';
 import groupConfig from './assets/build-group';
-import store, { User } from './store';
-import { showResource, showShip, weightBalance, findUserShipById } from './utils';
+import store from './store';
+import {
+  showResource,
+  showShip,
+  weightBalance,
+  computeExtraWeight,
+  findConfigShipById,
+} from './utils';
 import { ADMIN_ID, isDev, TEST_GROUP_ID } from '../../../configs';
 import dropConfig from './assets/drop';
 import rewardConfig, { RewardType } from './assets/reward';
@@ -21,16 +27,8 @@ import {
   ResourceType,
   RESOURCE_NAMES,
 } from './constants';
-import levelConfig from './assets/level';
-
-const getUserInitData = (id: number): User => ({
-  id,
-  limit: 20000,
-  resource: [20000, 20000, 20000, 20000],
-  secretary: null,
-  ships: [],
-  level: 1,
-});
+import User from './store/user';
+import strip from '../../../utils/strip';
 
 class MiniKancolleModule extends Module {
   constructor(bot: CQWebSocket) {
@@ -43,8 +41,12 @@ class MiniKancolleModule extends Module {
       if (ctx.group_id !== TEST_GROUP_ID) {
         return;
       }
+    } else {
+      if (ctx.group_id === TEST_GROUP_ID) {
+        return;
+      }
     }
-    const [prefix, action, ...params] = ctx.message.trim().split(' ');
+    const [prefix, action, ...params] = ctx.message.trim().split(/\s+/g);
     if (prefix !== PREFIX) {
       return;
     }
@@ -52,37 +54,38 @@ class MiniKancolleModule extends Module {
     const reply = (content: string) => {
       e.setMessage([atSender, '\n', content]);
     };
-    const user = store.data?.users[ctx.sender?.user_id];
+    const user = store.getUserById(ctx.sender?.user_id);
     switch (action) {
       case 'add-r': {
-        try {
-          if (ctx.user_id === ADMIN_ID) {
-            const [id, ...toAddResource] = params.map((r: string) => +r);
-            const user = store.getUserById(id);
-            this.addResource(user, toAddResource);
-            reply('资源添加成功');
-          } else {
-            reply('只有空山才能做到');
+        if (ctx.user_id === ADMIN_ID) {
+          const [id, ...toAddResource] = params.map((r: string) => +r);
+          const user = store.getUserById(id);
+          if (!user) {
+            reply(`没有这个用户: ${id}`);
+            return;
           }
-        } catch (e) {
-          reply(e.message);
+          user.addResource(toAddResource);
+          reply('资源添加成功');
+        } else {
+          reply('只有空山才能做到');
         }
         return;
       }
 
       case 'set-r': {
-        try {
-          if (ctx.user_id === ADMIN_ID) {
-            const [id, ...toAddResource] = params.map((r: string) => +r);
-            store.setUserDataById(id, 'resource', toAddResource);
-            store.syncData();
-            reply('资源设置成功');
-          } else {
-            reply('只有空山才能做到');
+        if (ctx.user_id === ADMIN_ID) {
+          const [id, ...toAddResource] = params.map((r: string) => +r);
+          const user = store.getUserById(id);
+          if (!user) {
+            reply(`没有这个用户: ${id}`);
+            return;
           }
-        } catch (e) {
-          reply(e.message);
+          user.addResource(toAddResource);
+          reply('资源设置成功');
+        } else {
+          reply('只有空山才能做到');
         }
+
         return;
       }
 
@@ -90,12 +93,12 @@ class MiniKancolleModule extends Module {
         try {
           if (ctx.user_id === ADMIN_ID) {
             const [id, toAddShipId] = params.map((r: string) => +r);
-            const targetUser = store.data?.users[id];
+            const targetUser = store.getUserById(id);
             if (!targetUser) {
               reply('没有这个用户');
               return;
             }
-            this.addShip(targetUser, toAddShipId);
+            targetUser.addShip(toAddShipId);
             reply('舰船添加成功');
           } else {
             reply('只有空山才能做到');
@@ -131,7 +134,7 @@ class MiniKancolleModule extends Module {
           reply('角色已存在');
           return;
         }
-        store.setUser(ctx.sender.user_id, getUserInitData(ctx.sender.user_id));
+        store.addNewUser(ctx.sender.user_id);
         reply('已经建立角色, 开始建造吧~');
         return;
       }
@@ -161,13 +164,11 @@ class MiniKancolleModule extends Module {
         const ships = _.isEmpty(user.ships)
           ? '[暂无舰娘]'
           : _(user.ships)
-              .map((s) => `${showShip(s)} × ${s.amount}`)
+              .map((s) => `${showShip(s.id)} × ${s.amount}`)
               .join('\n');
-        const userSeceretaryStr = user.secretary
-          ? showShip(findUserShipById(user.secretary, user)!)
-          : '空';
+        const userSeceretaryStr = user.secretary ? showShip(user.secretary) : '空';
 
-        const userLevelInfo = _.find(levelConfig, (info) => user.level === info.level)!;
+        const { userLevelInfo } = user;
 
         const infoMap = {
           镇守府等级: `${new Array(user.level)
@@ -193,28 +194,26 @@ class MiniKancolleModule extends Module {
         }
         const [inputSeceretary] = params;
         if (!inputSeceretary) {
-          const userSeceretary = _.find(shipsConfig, (s) => s.id === user.secretary);
-          if (!userSeceretary) {
+          if (!user.secretary) {
             reply(`你现在还没有设置秘书舰`);
             return;
           }
-          reply(`你现在的秘书舰为: ${showShip(userSeceretary)}`);
+          reply(`你现在的秘书舰为: ${showShip(user.secretary)}`);
           return;
         }
         if (inputSeceretary === 'null') {
-          user.secretary = null;
-          store.syncData();
+          user.setSecretary(null);
+          // store.syncData();
           reply(`秘书舰已置空`);
           return;
         }
-        const inputSeceretaryShip = findUserShipById(+inputSeceretary, user);
-        if (!inputSeceretaryShip) {
-          reply(`输入错误, 你没有这个舰娘`);
-          return;
+        try {
+          user.setSecretary(+inputSeceretary);
+          reply(`设置成功, 你现在的秘书舰为${showShip(+inputSeceretary)}`);
+        } catch (e) {
+          reply(e.message);
         }
-        user.secretary = +inputSeceretary;
-        store.syncData();
-        reply(`设置成功, 你现在的秘书舰为${showShip(inputSeceretaryShip)}`);
+        // store.syncData();
         return;
       }
 
@@ -242,17 +241,19 @@ class MiniKancolleModule extends Module {
           reply(`还未建立角色哦, 请输入 ${PREFIX} ${ACTIONS.start} 来开始`);
           return;
         }
-        const levelInfo = _(levelConfig).find((info) => info.level === user.level);
-        if (!levelInfo) {
+        const { userLevelInfo } = user;
+        if (!userLevelInfo) {
           reply(`啊哦你的镇守府出问题了, 请联系空山`);
           return;
         }
-        const userMaruyu = findUserShipById(1000, user);
-        if (!userMaruyu || userMaruyu.amount < levelInfo.upgradeRequirement) {
-          reply(`马路油数量不足哦 (${userMaruyu?.amount || 0}/${levelInfo.upgradeRequirement})`);
+        const userMaruyu = user.getShipById(1000);
+        if (!userMaruyu || userMaruyu.amount < userLevelInfo.upgradeRequirement) {
+          reply(
+            `马路油数量不足哦 (${userMaruyu?.amount || 0}/${userLevelInfo.upgradeRequirement})`,
+          );
           return;
         }
-        if (userMaruyu.amount === levelInfo.upgradeRequirement && user.secretary === 1000) {
+        if (userMaruyu.amount === userLevelInfo.upgradeRequirement && user.secretary === 1000) {
           reply(`不能拆除作为秘书舰的まるゆ哦~ 请先将秘书舰换成别人`);
           return;
         }
@@ -260,11 +261,13 @@ class MiniKancolleModule extends Module {
           reply(`镇守府已到达最高等级啦`);
           return;
         }
-        if (this.decShip(user, 1000, levelInfo.upgradeRequirement) === false) {
+        try {
+          user.dropShip(1000, userLevelInfo.upgradeRequirement);
+          user.upgrade();
+        } catch (e) {
+          reply(e.message);
           return;
         }
-        user.level = Math.min(user.level + 1, MAX_HOME_LEVEL);
-        store.syncData();
         reply(`镇守府升级啦, 当前等级为 ${user.level}级`);
         return;
       }
@@ -275,7 +278,7 @@ class MiniKancolleModule extends Module {
           return;
         }
         if (user.secretary !== 1034) {
-          reply(`需要${showShip(_.find(shipsConfig, (s) => s.name === '明石')!)}作为旗舰哦`);
+          reply(`需要${showShip(1034)}作为旗舰哦`);
           return;
         }
         if (params.length < 3) {
@@ -305,21 +308,21 @@ class MiniKancolleModule extends Module {
         }
 
         const tradeRate = this.getTradeRate(sourceType);
-        const levelInfo = _.find(levelConfig, (info) => info.level === user.level)!;
+        const { userLevelInfo } = user;
         const targetAmount = Math.round(
-          sourceAmount * tradeRate[targetType - 1] * (1 - levelInfo.tradeTaxRate),
+          strip(sourceAmount * tradeRate[targetType - 1] * (1 - userLevelInfo.tradeTaxRate), 2),
         );
         const toCalcResource = [0, 0, 0, 0];
         toCalcResource[targetType - 1] = targetAmount;
         toCalcResource[sourceType - 1] = -sourceAmount;
-        this.addResource(user, toCalcResource);
+        user.addResource(toCalcResource);
         reply(
           `明老板很开心, 收下了你的 ${sourceAmount}${
             RESOURCE_NAMES[sourceType - 1]
           } 并给你了 ${targetAmount}${RESOURCE_NAMES[targetType - 1]}${
-            levelInfo.tradeTaxRate === 0
+            userLevelInfo.tradeTaxRate === 0
               ? ''
-              : `\n(顺便一提明老板收取了 ${sourceAmount * levelInfo.tradeTaxRate}${
+              : `\n(顺便一提明老板收取了 ${sourceAmount * userLevelInfo.tradeTaxRate}${
                   RESOURCE_NAMES[sourceType - 1]
                 } 作为手续费~)`
           }`,
@@ -334,20 +337,20 @@ class MiniKancolleModule extends Module {
           return;
         }
         const rate = this.getTradeRate(sourceType);
-        reply(`目前${RESOURCE_NAMES[sourceType - 1]}对其他资源的的交换比率为[${rate.join(', ')}]`);
+        reply(`目前${RESOURCE_NAMES[sourceType - 1]}对其他资源的交换比率为[${rate.join(', ')}]`);
         return;
       }
 
       default: {
         const actions = _.map(ACTIONS, (v) => v).join(' | ');
-        reply(`欢迎来玩迷你砍口垒模拟大建\n 可用的指令为:\n${PREFIX} ${actions}`);
+        reply(`欢迎来玩迷你砍口垒模拟大建\n可用的指令为:\n${PREFIX} ${actions}`);
         return;
       }
     }
   };
 
   private getTradeRate(type: ResourceType) {
-    const resourceTotalAmount = _(store.data?.users)
+    const resourceTotalAmount = _(store.users)
       .map((user) => user.resource)
       .reduce((prev, curr) => _.map(prev, (pr, i) => pr + curr[i]), [0, 0, 0, 0]);
     const resourceTradeRate = _(resourceTotalAmount).map((r) =>
@@ -361,15 +364,20 @@ class MiniKancolleModule extends Module {
       return '参数需要舰娘ID';
     }
     const replyMsgArr = _.map(shipIds, (id) => {
-      const dropShip = _.find(user.ships, (s) => s.id === id);
+      const dropShip = user.getShipById(id);
       if (!dropShip) {
         return `舰队中没有ID为[${id}]的舰娘哦~`;
       }
       if (id === user.secretary && dropShip.amount === 1) {
         return `不能解体秘书舰, 请先更换秘书舰`;
       }
-      store.dropUserShip(user.id, id);
-      const dropShipConfig = _.find(shipsConfig, (s) => s.id === id)!;
+
+      try {
+        user.dropShip(id);
+      } catch (e) {
+        return e.message;
+      }
+      const dropShipConfig = findConfigShipById(id)!;
       const dropGroup = pickRandom(
         weightBalance(dropConfig, Math.round(_.sum(dropShipConfig.resource) / 1000)),
       );
@@ -381,10 +389,8 @@ class MiniKancolleModule extends Module {
       );
 
       if (reward.type === RewardType.resource) {
-        this.addResource(user, reward.reward as number[]);
-        return `解体${showShip(dropShip)}成功!\n获得资源:\n${showResource(
-          reward.reward as number[],
-        )}`;
+        user.addResource(reward.reward as number[]);
+        return `解体${showShip(id)}成功!\n获得资源:\n${showResource(reward.reward as number[])}`;
       } else if (reward.type === RewardType.ship) {
         if (typeof reward.reward === 'number') {
           const rewardShip = pickRandom(
@@ -392,20 +398,18 @@ class MiniKancolleModule extends Module {
               .find((g) => g.group === reward.reward)!
               .ships.map((shipId) => _(shipsConfig).find((s) => s.id === shipId)!),
           );
-          this.addShip(user, rewardShip.id);
-          return `解体${showShip(dropShip)}成功!\n妖精们利用拆卸下来的零件重新建造成了${showShip(
-            rewardShip,
+          user.addShip(rewardShip.id);
+          return `解体${showShip(id)}成功!\n妖精们利用拆卸下来的零件重新建造成了${showShip(
+            rewardShip.id,
           )}~`;
         } else {
           _.each(reward.reward, (r) => {
-            this.addShip(user, r);
+            user.addShip(r);
           });
           const shipNames = _(reward.reward)
             .map((id) => _.find(shipsConfig, (s) => s.id === id)!.name)
             .join('、');
-          return `解体${showShip(
-            dropShip,
-          )}成功!\n妖精们利用拆卸下来的零件重新建造成了${shipNames}~`;
+          return `解体${showShip(id)}成功!\n妖精们利用拆卸下来的零件重新建造成了${shipNames}~`;
         }
       }
     });
@@ -440,7 +444,7 @@ class MiniKancolleModule extends Module {
       .map((item) => {
         return {
           ...item,
-          weight: item.weight + this.computeExtraWeight(item.resource, inputResource),
+          weight: item.weight + computeExtraWeight(item.resource, inputResource),
         };
       })
       .value();
@@ -460,64 +464,12 @@ class MiniKancolleModule extends Module {
       );
       return `妖精们不知道什么原因罢工了, 资源还给你> <`;
     }
-    this.addShip(user, selectedShip.id);
+    user.addShip(selectedShip.id);
     if (user.id !== ADMIN_ID) {
-      user.resource = _.map(user.resource, (r, i) => r - inputResource[i]);
+      console.log(user.id, ADMIN_ID);
+      user.addResource(_.map(inputResource, (r) => -r));
     }
-    return `舰娘「${selectedShip.name}」加入了舰队~`;
-  }
-
-  private addShip(user: User, shipId: number) {
-    const userShip = _.find(user.ships, (_ship) => _ship.id === shipId);
-    const shipInfo = _.find(shipsConfig, (s) => s.id === shipId)!;
-    if (userShip) {
-      userShip.amount += 1;
-    } else {
-      const ship = {
-        amount: 1,
-        name: shipInfo.name,
-        id: shipInfo.id,
-      };
-      user.ships = [...user.ships, ship];
-    }
-    store.syncData();
-  }
-
-  private decShip(user: User, shipId: number, amount = 1) {
-    const targetShip = findUserShipById(shipId, user);
-    if (!targetShip) {
-      return false;
-    }
-    if (targetShip.amount - amount < 0) {
-      return false;
-    }
-    if (targetShip.amount === amount) {
-      user.ships = _(user.ships)
-        .without(targetShip)
-        .value();
-    } else {
-      targetShip.amount -= amount;
-    }
-    store.syncData();
-  }
-
-  private addResource(user: User, inputResource: number[]) {
-    store.setUserDataById(
-      user.id,
-      'resource',
-      user.resource.map((r, i) => r + (+inputResource[i] || 0)),
-    );
-    store.syncData();
-  }
-
-  private computeExtraWeight(requiredResource: number[], inputResource: number[]) {
-    let extraWeight = 0;
-    for (let i = 0; i < 4; i++) {
-      extraWeight +=
-        Math.round((BUILD_RESOURCE_MAX - (inputResource[i] - requiredResource[i])) / 1000) *
-        (i === 3 ? 1 : 5);
-    }
-    return extraWeight;
+    return `舰娘${showShip(selectedShip.id)}加入了舰队~`;
   }
 }
 

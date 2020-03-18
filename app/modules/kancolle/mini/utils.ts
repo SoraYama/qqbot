@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { RandomItem } from '../../../utils/pickRandom';
-import { Ship, User } from './store';
 import shipsConfig from './assets/ships';
+import { BUILD_RESOURCE_MAX } from './constants';
 
 const resourceStr = ['油', '弹', '钢', '铝'];
 
@@ -9,10 +9,6 @@ export const showResource = (resource: number[] = []) => {
   return _(resource)
     .map((r, i) => `${resourceStr[i]}: ${r}`)
     .join(' ');
-};
-
-export const showShip = (ship: Partial<Ship>) => {
-  return `[${ship.id}]「${ship.name}」`;
 };
 
 export const weightBalance = <T extends RandomItem>(list: T[], figure: number) => {
@@ -27,10 +23,21 @@ export const weightBalance = <T extends RandomItem>(list: T[], figure: number) =
   return res;
 };
 
-export const findUserShipById = (shipId: number, user: User) => {
-  return _.find(user.ships, (s) => s.id === shipId);
-};
-
 export const findConfigShipById = (shipId: number) => {
   return _.find(shipsConfig, (s) => s.id === shipId);
+};
+
+export const computeExtraWeight = (requiredResource: number[], inputResource: number[]) => {
+  let extraWeight = 0;
+  for (let i = 0; i < 4; i++) {
+    extraWeight +=
+      Math.round((BUILD_RESOURCE_MAX - (inputResource[i] - requiredResource[i])) / 1000) *
+      (i === 3 ? 1 : 5);
+  }
+  return extraWeight;
+};
+
+export const showShip = (shipId: number) => {
+  const ship = findConfigShipById(shipId);
+  return `[${ship?.id || NaN}]「${ship?.name || null}」`;
 };
