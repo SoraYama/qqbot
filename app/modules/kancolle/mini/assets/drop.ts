@@ -11,7 +11,7 @@ const dropConfig = [
   },
   {
     group: 3,
-    weight: 100,
+    weight: 150,
     reward: [2000, 2001, 2002, 2003, 2004, 2005],
   },
 ];

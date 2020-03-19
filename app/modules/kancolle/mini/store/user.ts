@@ -125,6 +125,9 @@ class User {
 
   @action
   public setSecretary(shipId: number | null) {
+    if (!_.isInteger(shipId)) {
+      throw new Error(`输入错误, 参数应该为舰娘ID`);
+    }
     if (!shipId) {
       this.secretary = null;
       return;

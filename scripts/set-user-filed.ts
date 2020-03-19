@@ -8,17 +8,19 @@ const dbPath = path.resolve(__dirname, '..', 'db', 'mini.json');
 const main = async () => {
   const data = await fs.readJson(dbPath);
   data.users = _.mapValues(data.users, (user) => ({
+    // ...user,
+    // ships: _(user.ships)
+    //   .groupBy('id')
+    //   .map((item) =>
+    //     item.reduce((p, c) => ({
+    //       ...p,
+    //       amount: p.amount + c.amount,
+    //     })),
+    //   )
+    //   .flatten()
+    //   .value(),
     ...user,
-    ships: _(user.ships)
-      .groupBy('id')
-      .map((item) =>
-        item.reduce((p, c) => ({
-          ...p,
-          amount: p.amount + c.amount,
-        })),
-      )
-      .flatten()
-      .value(),
+    ships: _(user.ships).filter((s) => s.amount !== 0),
   }));
   await fs.writeJson(dbPath, data);
 };

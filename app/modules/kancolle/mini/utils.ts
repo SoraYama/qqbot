@@ -32,7 +32,7 @@ export const computeExtraWeight = (requiredResource: number[], inputResource: nu
   for (let i = 0; i < 4; i++) {
     extraWeight +=
       Math.round((BUILD_RESOURCE_MAX - (inputResource[i] - requiredResource[i])) / 1000) *
-      (i === 3 ? 1 : 5);
+      Math.round(((inputResource[i] / 1000) * (i === 3 ? 10 : 1)) / 10);
   }
   return extraWeight;
 };

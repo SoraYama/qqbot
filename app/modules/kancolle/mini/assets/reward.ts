@@ -35,12 +35,6 @@ const rewardConfig = [
     weight: 30,
   },
   {
-    id: 1005,
-    type: RewardType.ship,
-    reward: [1033],
-    weight: 1,
-  },
-  {
     id: 1100,
     type: RewardType.ship,
     reward: 1,
