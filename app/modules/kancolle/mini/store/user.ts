@@ -41,7 +41,7 @@ class User {
     this.id = user.id;
     this.resource = user.resource || INITIAL_RESOURCE;
     this.ships = _(user.ships || [])
-      .map((s) => new Ship(s.id))
+      .map((s) => new Ship({ amount: s.amount, id: s.id }))
       .value();
     this.secretary = user.secretary || null;
 
@@ -118,7 +118,7 @@ class User {
     if (userShip) {
       userShip.changeAmount(1);
     } else {
-      const ship = new Ship(shipId);
+      const ship = new Ship({ id: shipId });
       this.ships = [...this.ships, ship];
     }
   }

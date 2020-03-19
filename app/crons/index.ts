@@ -9,6 +9,7 @@ import daily from './daily';
 import monthly from './monthly';
 import twitter from './twitter';
 import staffAvatar from './staffAvatar';
+import dump from './dump';
 
 export interface Cron {
   time: string;
@@ -16,7 +17,7 @@ export interface Cron {
 }
 
 const list = map(
-  [practice, mtsxqy, hourly, daily, monthly, twitter, staffAvatar],
+  [practice, mtsxqy, hourly, daily, monthly, twitter, staffAvatar, dump],
   (cron: Cron) => (bot: CQWebSocket) =>
     new CronJob(cron.time, cron.onTime(bot), undefined, true, 'Asia/Tokyo'),
 );

@@ -28,7 +28,7 @@ const hourly = {
   onTime: (bot: CQWebSocket) => () => {
     const now = new Date();
     const h = now.getHours();
-
+    // 时报
     axios
       .get<VoiceResponse>(getVoiceAPI(pickOne(KanMusuList)))
       .then(({ data }) => {
