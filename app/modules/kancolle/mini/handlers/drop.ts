@@ -24,46 +24,46 @@ const drop = (shipIds: number[], user: User) => {
 
     try {
       user.dropShip(id);
+      const dropShipConfig = findConfigShipById(id)!;
+      const dropGroup = pickRandom(
+        weightBalance(dropConfig, Math.round(_.sum(dropShipConfig.resource) / 1000)),
+      );
+      const reward = pickRandom(
+        _.map(
+          dropGroup.reward,
+          (rewardId) => _(rewardConfig).find((reward) => reward.id === rewardId)!,
+        ),
+      );
+
+      if (reward.type === RewardType.resource) {
+        logger.info(`解体结果 - ${user.id} ${id} ${reward.type} ${reward.reward}`);
+        user.addResource(reward.reward as number[]);
+        return `解体${showShip(id)}成功!\n获得资源:\n${showResource(reward.reward as number[])}`;
+      } else if (reward.type === RewardType.ship) {
+        if (typeof reward.reward === 'number') {
+          const rewardShip = pickRandom(
+            _(groupConfig)
+              .find((g) => g.group === reward.reward)!
+              .ships.map((shipId) => _(shipsConfig).find((s) => s.id === shipId)!),
+          );
+          user.addShip(rewardShip.id);
+          logger.info(`解体结果 - ${user.id} ${id} ${reward.type} ${rewardShip.name}`);
+          return `解体${showShip(id)}成功!\n妖精们利用拆卸下来的零件重新建造成了${showShip(
+            rewardShip.id,
+          )}~`;
+        } else {
+          _.each(reward.reward, (r) => {
+            user.addShip(r);
+          });
+          const shipNames = _(reward.reward)
+            .map((id) => findConfigShipById(id)!.name)
+            .join('、');
+          logger.info(`解体结果 - ${user.id} ${id} ${reward.type} ${shipNames}`);
+          return `解体${showShip(id)}成功!\n妖精们利用拆卸下来的零件重新建造成了${shipNames}~`;
+        }
+      }
     } catch (e) {
       return e.message;
-    }
-    const dropShipConfig = findConfigShipById(id)!;
-    const dropGroup = pickRandom(
-      weightBalance(dropConfig, Math.round(_.sum(dropShipConfig.resource) / 1000)),
-    );
-    const reward = pickRandom(
-      _.map(
-        dropGroup.reward,
-        (rewardId) => _(rewardConfig).find((reward) => reward.id === rewardId)!,
-      ),
-    );
-
-    if (reward.type === RewardType.resource) {
-      logger.info(`解体结果 - ${user.id} ${id} ${reward.type} ${reward.reward}`);
-      user.addResource(reward.reward as number[]);
-      return `解体${showShip(id)}成功!\n获得资源:\n${showResource(reward.reward as number[])}`;
-    } else if (reward.type === RewardType.ship) {
-      if (typeof reward.reward === 'number') {
-        const rewardShip = pickRandom(
-          _(groupConfig)
-            .find((g) => g.group === reward.reward)!
-            .ships.map((shipId) => _(shipsConfig).find((s) => s.id === shipId)!),
-        );
-        user.addShip(rewardShip.id);
-        logger.info(`解体结果 - ${user.id} ${id} ${reward.type} ${rewardShip.name}`);
-        return `解体${showShip(id)}成功!\n妖精们利用拆卸下来的零件重新建造成了${showShip(
-          rewardShip.id,
-        )}~`;
-      } else {
-        _.each(reward.reward, (r) => {
-          user.addShip(r);
-        });
-        const shipNames = _(reward.reward)
-          .map((id) => findConfigShipById(id)!.name)
-          .join('、');
-        logger.info(`解体结果 - ${user.id} ${id} ${reward.type} ${shipNames}`);
-        return `解体${showShip(id)}成功!\n妖精们利用拆卸下来的零件重新建造成了${shipNames}~`;
-      }
     }
   });
 

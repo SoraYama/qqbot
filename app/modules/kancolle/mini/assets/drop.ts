@@ -2,7 +2,7 @@ const dropConfig = [
   {
     group: 1,
     weight: 10,
-    reward: [1000, 1001, 1002, 1003, 1004, 1005],
+    reward: [1000, 1001, 1002, 1003, 1004],
   },
   {
     group: 2,
