@@ -4,7 +4,7 @@ import CQWebSocket from 'cq-websocket';
 import Module from '../../module';
 import { MessageEventListener } from '../../../../typings/cq-websocket';
 import store from './store';
-import { ADMIN_ID, isDev, TEST_GROUP_ID } from '../../../configs';
+import { ADMIN_ID, isDev, TEST_GROUP_ID, MINI_KANCOLLE_GROUPS } from '../../../configs';
 
 import { PREFIX, ACTIONS, RESOURCE_NAMES } from './constants';
 import build from './handlers/build';
@@ -27,7 +27,7 @@ class MiniKancolleModule extends Module {
         return;
       }
     } else {
-      if (ctx.group_id === TEST_GROUP_ID) {
+      if (!MINI_KANCOLLE_GROUPS.includes(ctx.group_id)) {
         return;
       }
     }

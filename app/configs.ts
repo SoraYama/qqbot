@@ -1,7 +1,11 @@
-// 大群
+// 远群
 export const GROUP_ID = 915378511;
+
 // 测试小群
 export const TEST_GROUP_ID = 1080079422;
+
+// 迷你砍口垒群们
+export const MINI_KANCOLLE_GROUPS = [1056398961];
 
 export const isDev = process.env.NODE_ENV === 'development';
 

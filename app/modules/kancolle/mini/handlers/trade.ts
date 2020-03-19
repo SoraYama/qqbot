@@ -56,12 +56,12 @@ const trade = (params: string[], reply: (content: string) => void, user: User | 
     )}] ${sourceAmount} ${targetAmount}`,
   );
   reply(
-    `明老板很开心, 收下了你的 ${sourceAmount}${
+    `明老板很开心, 收下了你的${sourceAmount}${
       RESOURCE_NAMES[sourceType - 1]
     } 并给你了 ${targetAmount}${RESOURCE_NAMES[targetType - 1]}${
       userLevelInfo.tradeTaxRate === 0
         ? ''
-        : `\n(顺便一提明老板收取了 ${sourceAmount * userLevelInfo.tradeTaxRate}${
+        : `\n(顺便一提明老板收取了${sourceAmount * userLevelInfo.tradeTaxRate}${
             RESOURCE_NAMES[sourceType - 1]
           } 作为手续费~)`
     }`,
