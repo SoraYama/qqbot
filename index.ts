@@ -10,6 +10,7 @@ import XiaoMModule from './app/modules/yuen/m';
 import Misc from './app/modules/yuen/misc';
 import PetModule from './app/modules/pet';
 import MiniKancolleModule from './app/modules/kancolle/mini';
+import startMiniKancolleServer from './app/server';
 
 const envs = dotenv.config();
 
@@ -57,4 +58,5 @@ const doCrons = () => {
 bot.on('ready', () => {
   loadModules();
   doCrons();
+  startMiniKancolleServer();
 });

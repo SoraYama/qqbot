@@ -83,8 +83,7 @@ class User {
   @action
   public addResource(resource: number[]) {
     if (_(resource).some((r) => !_.isNumber(r) || _.isNaN(r))) {
-      console.warn(`resource illegal`, resource);
-      return;
+      throw new Error(`resource illegal ${resource}`);
     }
     this.resource = _(resource)
       .map((r, i) => r + this.resource[i])
