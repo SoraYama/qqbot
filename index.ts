@@ -4,11 +4,11 @@ import { CQWebSocket } from 'cq-websocket';
 import dotenv from 'dotenv';
 
 import crons from './app/crons';
-import RepeatModule from './app/modules/yuen/repeat';
-import ItemImprovementModule from './app/modules/kancolle/item-improvement';
-import XiaoMModule from './app/modules/yuen/m';
-import Misc from './app/modules/yuen/misc';
-import PetModule from './app/modules/pet';
+// import RepeatModule from './app/modules/yuen/repeat';
+// import ItemImprovementModule from './app/modules/kancolle/item-improvement';
+// import XiaoMModule from './app/modules/yuen/m';
+// import Misc from './app/modules/yuen/misc';
+// import PetModule from './app/modules/pet';
 import MiniKancolleModule from './app/modules/kancolle/mini';
 import startMiniKancolleServer from './app/server';
 
@@ -43,11 +43,11 @@ bot
   });
 
 const loadModules = () => {
-  new RepeatModule(bot);
-  new ItemImprovementModule(bot);
-  new XiaoMModule(bot);
-  new Misc(bot);
-  new PetModule(bot);
+  // new RepeatModule(bot);
+  // new ItemImprovementModule(bot);
+  // new XiaoMModule(bot);
+  // new Misc(bot);
+  // new PetModule(bot);
   new MiniKancolleModule(bot);
 };
 
