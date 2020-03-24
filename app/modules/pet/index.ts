@@ -6,6 +6,7 @@ import Module from '../module';
 import { MessageEventListener } from '../../../typings/cq-websocket';
 import writer from './writer';
 import strip from '../../utils/strip';
+import { GROUP_ID } from '../../configs';
 
 const triggerMap = {
   feed: 'feed',
@@ -29,6 +30,10 @@ export default class PetModule extends Module {
   }
 
   onGroupMessage: MessageEventListener = async (e, ctx) => {
+    const { group_id } = ctx;
+    if (group_id === GROUP_ID) {
+      return;
+    }
     const feedTrigger = this.getTrigger('feed');
     const infoTrigger = this.getTrigger('info');
     const helpTrigger = this.getTrigger('help');

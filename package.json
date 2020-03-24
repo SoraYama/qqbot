@@ -68,7 +68,7 @@
   },
   "lint-staged": {
     "*.ts": [
-      "eslint --fix --ignore-path .eslintignore"
+      "eslint --fix"
     ]
   }
 }

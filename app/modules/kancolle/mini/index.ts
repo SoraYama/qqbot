@@ -114,9 +114,23 @@ class MiniKancolleModule extends Module {
           return;
         }
         const [...shipIds] = params;
+
+        if (shipIds[0] === 'all') {
+          const ids = _(user.ships)
+            .filter((s) => s.id !== 1000 && s.amount > 1)
+            .map((s) => new Array(s.amount - 1).fill('').map(() => s.id))
+            .flatten()
+            .value();
+          const msg = drop(ids, user!);
+          reply(msg);
+          return;
+        }
+
         if (_(shipIds).some((id) => !_.isInteger(+id))) {
           reply('输入错误, 需要输入舰娘ID用空格分开哦');
+          return;
         }
+
         const msg = drop(
           _.map(shipIds, (id) => +id),
           user!,
