@@ -5,6 +5,8 @@ services:
     build: .
     image: cqbot
     container_name: 'cqbot'
+    ports:
+      - '1551:1551'
     volumes:
       - db:/app/db
       - logs:/app/logs

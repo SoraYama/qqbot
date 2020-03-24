@@ -107,7 +107,7 @@ class User {
         .without(targetShip)
         .value();
     } else {
-      targetShip.changeAmount(-amount);
+      targetShip.addAmount(-amount);
     }
   }
 
@@ -115,7 +115,7 @@ class User {
   public addShip(shipId: number) {
     const userShip = this.getShipById(shipId);
     if (userShip) {
-      userShip.changeAmount(1);
+      userShip.addAmount(1);
     } else {
       const ship = new Ship({ id: shipId });
       this.ships = [...this.ships, ship];
@@ -141,6 +141,33 @@ class User {
   @action
   public upgrade() {
     this.level++;
+  }
+
+  @action
+  public setLevel(level: number) {
+    if (!_.isInteger(level)) {
+      throw new Error('等级输入错误');
+    }
+    this.level = level;
+  }
+
+  @action
+  public setResource(resource: number[]) {
+    if (resource.some((r) => !_.isInteger(r))) {
+      throw new Error('资源输入错误');
+    }
+    this.resource = resource;
+  }
+
+  @action
+  public setShipAmount(shipId: number, amount: number) {
+    const ship = this.getShipById(shipId);
+    if (!ship) {
+      const ship = new Ship({ id: shipId, amount });
+      this.ships.push(ship);
+      return ship;
+    }
+    ship.setAmount(amount);
   }
 
   public getShipById(shipId: number) {

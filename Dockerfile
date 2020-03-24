@@ -14,6 +14,18 @@ COPY ./yarn.lock ./yarn.lock
 
 RUN yarn --registry=https://registry.npm.taobao.org
 
+COPY ./views/package.json ./views/package.json
+
+COPY ./views/yarn.lock ./views/yarn.lock
+
+RUN cd ./views && \
+  yarn --registry=https://registry.npm.taobao.org
+
+COPY ./views ./views
+
+RUN cd ./views && \
+  yarn build
+
 COPY . .
 
 CMD ["yarn", "start"]

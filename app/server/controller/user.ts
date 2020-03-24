@@ -42,6 +42,67 @@ const userControllers = {
       return;
     }
   },
+
+  setResource: async (ctx: Context & RouterContext) => {
+    const { userId, resource } = ctx.request.body;
+    try {
+      const user = store.getUserById(userId);
+      if (!user) {
+        ctx.response.body = {
+          errMsg: '没有这个用户',
+        };
+        return;
+      }
+      user.setResource(resource);
+      ctx.response.body = {
+        status: 0,
+      };
+    } catch (e) {
+      ctx.response.body = {
+        errMsg: e.message,
+      };
+    }
+  },
+
+  setLevel: async (ctx: Context & RouterContext) => {
+    const { userId, level } = ctx.request.body;
+    try {
+      const user = store.getUserById(userId);
+      if (!user) {
+        ctx.response.body = {
+          errMsg: '没有这个用户',
+        };
+        return;
+      }
+      user.setLevel(level);
+      ctx.response.body = {
+        status: 0,
+      };
+    } catch (e) {
+      ctx.response.body = {
+        errMsg: e.message,
+      };
+    }
+  },
+
+  setShipAmount: async (ctx: Context & RouterContext) => {
+    const { userId, shipId, amount } = ctx.request.body;
+    try {
+      const user = store.getUserById(userId);
+      if (!user) {
+        ctx.response.body = {
+          errMsg: '没有这个用户',
+        };
+        return;
+      }
+      const ship = user.setShipAmount(shipId, amount);
+      ctx.response.body = ship;
+    } catch (e) {
+      ctx.response.body = {
+        errMsg: e.message,
+      };
+    }
+  },
 };
 
 export default userControllers;

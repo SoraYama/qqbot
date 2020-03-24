@@ -26,8 +26,13 @@ class Ship {
   }
 
   @action
-  public changeAmount(amount: number) {
+  public addAmount(amount: number) {
     this.amount += amount;
+  }
+
+  @action
+  public setAmount(amount: number) {
+    this.amount = amount;
   }
 }
 
