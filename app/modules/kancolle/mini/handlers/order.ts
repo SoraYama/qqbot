@@ -136,7 +136,7 @@ const order = (params: string[], reply: (content: string) => void, user: User | 
       }
     }
   } catch (e) {
-    reply(e.message);
+    reply(`交易失败\n${e.message}`);
   }
 };
 

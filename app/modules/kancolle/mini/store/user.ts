@@ -97,10 +97,16 @@ class User {
   @action
   public addResource(resource: number[]) {
     if (_(resource).some((r) => !_.isNumber(r) || _.isNaN(r))) {
-      throw new Error(`resource illegal ${resource}`);
+      throw new Error(`输入资源应该为整数`);
     }
     this.resource = _(resource)
-      .map((r, i) => r + this.resource[i])
+      .map((r, i) => {
+        const targetResource = r + this.resource[i];
+        if (targetResource < 0) {
+          throw new Error('资源不足');
+        }
+        return targetResource;
+      })
       .value();
   }
 
