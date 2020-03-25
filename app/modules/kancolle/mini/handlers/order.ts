@@ -38,6 +38,10 @@ const order = (params: string[], reply: (content: string) => void, user: User | 
         .split('-')
         .map((str) => str.split(','))
         .map((item) => item.map((s) => +s));
+      if (_([outcoming, incoming]).every((arr) => _(arr).some((n) => !_.isInteger(n) || n < 0))) {
+        reply('资源或舰娘ID输入错误');
+        return;
+      }
       const newOrder = store.addNewOrder({
         toTrade: outcoming,
         wanted: incoming,
