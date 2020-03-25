@@ -96,7 +96,7 @@ const userControllers = {
         return;
       }
       const ship = user.setShipAmount(shipId, amount);
-      ctx.response.body = ship;
+      ctx.response.body = ship?.asJson;
     } catch (e) {
       ctx.response.body = {
         errMsg: e.message,

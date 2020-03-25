@@ -33,7 +33,6 @@ const build = (resourceString: string[] = [], user: User) => {
   );
   const weightMapped = filteredBySeceretary
     .map((item) => {
-      console.log(item.name, item.weight, computeExtraWeight(item.resource, inputResource));
       return {
         ...item,
         weight: item.weight + computeExtraWeight(item.resource, inputResource),

@@ -8,13 +8,22 @@ import levelConfig from '../assets/level';
 
 const INITIAL_RESOURCE = [20000, 20000, 20000, 20000];
 
+interface UserConfig {
+  dropExceptIds: number[];
+}
+
 interface InputUser {
   level?: number;
   id: number;
   resource?: number[];
   ships?: Ship[];
   secretary?: number | null;
+  configs?: UserConfig;
 }
+
+const INIT_USER_CONFIG: UserConfig = {
+  dropExceptIds: [],
+};
 
 class User {
   public id = 0;
@@ -33,6 +42,9 @@ class User {
   @observable
   public ships: Ship[] = [];
 
+  @observable
+  public config: UserConfig;
+
   public disposeReaction: IReactionDisposer;
 
   constructor(user: InputUser, store: MiniKancolleStore) {
@@ -41,9 +53,10 @@ class User {
     this.id = user.id;
     this.resource = user.resource || INITIAL_RESOURCE;
     this.ships = _(user.ships || [])
-      .map((s) => new Ship({ amount: s.amount, id: s.id }))
+      .map((s) => new Ship({ amount: s.amount, id: s.id }, this))
       .value();
     this.secretary = user.secretary || null;
+    this.config = user.configs || INIT_USER_CONFIG;
 
     this.disposeReaction = reaction(
       () => this.asJson,
@@ -63,7 +76,8 @@ class User {
       level: this.level,
       resource: this.resource,
       secretary: this.secretary,
-      ships: this.ships,
+      ships: this.ships.map((s) => s.asJson),
+      config: this.config,
     };
   }
 
@@ -103,6 +117,7 @@ class User {
       if (this.secretary === shipId) {
         throw new Error(`秘书舰不能被解体哦, 请先更换秘书舰`);
       }
+      targetShip.dispose();
       this.ships = _(this.ships)
         .without(targetShip)
         .value();
@@ -117,7 +132,7 @@ class User {
     if (userShip) {
       userShip.addAmount(1);
     } else {
-      const ship = new Ship({ id: shipId });
+      const ship = new Ship({ id: shipId }, this);
       this.ships = [...this.ships, ship];
     }
   }
@@ -163,11 +178,22 @@ class User {
   public setShipAmount(shipId: number, amount: number) {
     const ship = this.getShipById(shipId);
     if (!ship) {
-      const ship = new Ship({ id: shipId, amount });
+      const ship = new Ship({ id: shipId, amount }, this);
       this.ships.push(ship);
       return ship;
     }
     ship.setAmount(amount);
+  }
+
+  @action
+  public setDropShipIds(shipIds: number[]) {
+    if (_(shipIds).some((id) => !_.isInteger(id))) {
+      throw new Error('舰娘ID输入错误');
+    }
+    this.config = {
+      ...this.config,
+      dropExceptIds: shipIds,
+    };
   }
 
   public getShipById(shipId: number) {

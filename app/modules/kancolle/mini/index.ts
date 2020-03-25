@@ -31,7 +31,7 @@ class MiniKancolleModule extends Module {
         return;
       }
     }
-    const [prefix, action, ...params] = ctx.message.trim().split(/\s+/g);
+    const [prefix, action, ...params] = (ctx.message as string).trim().split(/\s+/g);
     if (prefix !== PREFIX) {
       return;
     }
@@ -116,11 +116,21 @@ class MiniKancolleModule extends Module {
         const [...shipIds] = params;
 
         if (shipIds[0] === 'all') {
+          const exceptIds = _(shipIds)
+            .tail()
+            .map((id) => +id)
+            .concat(user.config.dropExceptIds)
+            .push(1000);
           const ids = _(user.ships)
-            .filter((s) => s.id !== 1000 && s.amount > 1)
+            .filter((s) => !exceptIds.includes(s.id) && s.amount > 1)
             .map((s) => new Array(s.amount - 1).fill('').map(() => s.id))
             .flatten()
             .value();
+          user.setDropShipIds(_.tail(shipIds).map((id) => +id));
+          if (_.isEmpty(ids)) {
+            reply('没有可以拆除的舰娘了哦');
+            return;
+          }
           const msg = drop(ids, user!);
           reply(msg);
           return;
