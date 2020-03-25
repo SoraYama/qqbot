@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import User from '../store/user';
 import store from '../store';
-import { ACTIONS, PREFIX } from '../constants';
+import { ACTIONS, PREFIX, logger } from '../constants';
 import Order, { OrderStatus } from '../store/order';
 import moment from 'moment';
 import helpText from '../assets/help';
@@ -104,6 +104,7 @@ const order = (params: string[], reply: (content: string) => void, user: User | 
         }
         order.setBuyerId(user.id);
         order.excute();
+        logger.log(`交易结果 - ${user.id} - ${order.id}`);
         const texts = typesText[order.orderType];
         reply(`交易成功, 你用${texts[1]}[${order.wanted}]换得了${texts[0]}[${order.toTrade}]`);
         return;
