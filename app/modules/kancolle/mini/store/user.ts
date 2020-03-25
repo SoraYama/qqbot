@@ -5,6 +5,7 @@ import Ship from './ship';
 import shipsConfig from '../assets/ships';
 import { MiniKancolleStore } from '.';
 import levelConfig from '../assets/level';
+import { MAX_HOME_LEVEL } from '../constants';
 
 const INITIAL_RESOURCE = [20000, 20000, 20000, 20000];
 
@@ -164,6 +165,9 @@ class User {
 
   @action
   public upgrade() {
+    if (this.level >= MAX_HOME_LEVEL) {
+      throw new Error('你的镇守府已经满级咯');
+    }
     this.level++;
   }
 

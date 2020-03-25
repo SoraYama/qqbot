@@ -12,6 +12,10 @@ const upgrade = (params: string[], reply: (content: string) => void, user: User 
     return;
   }
   const userMaruyu = user.getShipById(1000);
+  if (!userLevelInfo.upgradeRequirement) {
+    reply(`镇守府已到达最高等级啦`);
+    return;
+  }
   if (!userMaruyu || userMaruyu.amount < userLevelInfo.upgradeRequirement) {
     reply(`马路油数量不足哦 (${userMaruyu?.amount || 0}/${userLevelInfo.upgradeRequirement})`);
     return;

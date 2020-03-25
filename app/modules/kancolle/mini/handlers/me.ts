@@ -28,7 +28,10 @@ const me = (reply: (content: string) => void, user: User | null) => {
     秘书舰: userSeceretaryStr,
     资源上限: userLevelInfo.limit,
     资源增长速度: `[${userLevelInfo.accumulateVelocity.join(', ')}]`,
-    升级所需まるゆ数量: `${userLevelInfo.upgradeRequirement}个`,
+    升级所需まるゆ数量:
+      userLevelInfo.upgradeRequirement === null
+        ? '已满级'
+        : `${userLevelInfo.upgradeRequirement}个`,
     资源兑换手续费率: `${userLevelInfo.tradeTaxRate * 100}%`,
     舰队详情: ships,
   };

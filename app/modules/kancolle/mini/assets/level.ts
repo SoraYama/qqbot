@@ -66,7 +66,7 @@ const levelConfig = [
     level: 10,
     limit: 500000,
     accumulateVelocity: [500, 500, 500, 300],
-    upgradeRequirement: 100,
+    upgradeRequirement: null,
     tradeTaxRate: 0.5,
   },
 ];
