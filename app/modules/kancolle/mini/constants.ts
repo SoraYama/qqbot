@@ -5,6 +5,7 @@ export const AL_RISING_STEP = 10;
 export const OTHER_RISING_STEP = 30;
 export const INIT_STORE_DATA = {
   users: {},
+  orders: [],
 };
 export const RESOURCE_MAX_LIMIT = 300000;
 export const PREFIX = '/fleet';
@@ -21,6 +22,7 @@ export const ACTIONS = {
   upgrade: 'upgrade',
   trade: 'trade',
   tradeRate: 'trade-rate',
+  order: 'order',
 };
 export const enum ResourceType {
   oil = 1,

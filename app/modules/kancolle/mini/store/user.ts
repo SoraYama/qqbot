@@ -115,7 +115,7 @@ class User {
     }
     if (targetShip.amount === amount) {
       if (this.secretary === shipId) {
-        throw new Error(`秘书舰不能被解体哦, 请先更换秘书舰`);
+        throw new Error(`秘书舰不能被交易/解体哦, 请先更换秘书舰`);
       }
       targetShip.dispose();
       this.ships = _(this.ships)

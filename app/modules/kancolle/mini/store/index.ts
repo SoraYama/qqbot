@@ -6,6 +6,7 @@ import Store from '../../../../utils/store';
 import { INIT_STORE_DATA, ResourceType } from '../constants';
 import levelConfig from '../assets/level';
 import User from './user';
+import Order, { InputOrder } from './order';
 
 export interface IdMap<T> {
   [key: number]: T;
@@ -13,6 +14,7 @@ export interface IdMap<T> {
 
 export interface MiniKancolleData {
   users: IdMap<User>;
+  orders: Order[];
 }
 
 export interface Ship {
@@ -25,6 +27,9 @@ export class MiniKancolleStore extends Store {
   @observable
   public users: IdMap<User>;
 
+  @observable
+  public orders: Order[];
+
   constructor() {
     super('mini.json');
     this.readData(INIT_STORE_DATA);
@@ -34,6 +39,7 @@ export class MiniKancolleStore extends Store {
         users: _(this.users)
           .keys()
           .value(),
+        orders: this.orders.length,
       }),
       () => {
         this.syncData();
@@ -46,9 +52,13 @@ export class MiniKancolleStore extends Store {
       const data = fs.readJsonSync(this.dbPath) as MiniKancolleData;
       if (_.isEmpty(data)) {
         this.users = {};
+        this.orders = [];
       } else {
         this.users = _(data.users)
           .mapValues((v) => new User(v, this))
+          .value();
+        this.orders = _(data.orders)
+          .map((order) => new Order(order, this))
           .value();
       }
     } else {
@@ -82,6 +92,13 @@ export class MiniKancolleStore extends Store {
     });
   }
 
+  @action
+  public addNewOrder(order: InputOrder) {
+    const newOrder = new Order(order, this);
+    this.orders.push(newOrder);
+    return newOrder;
+  }
+
   public getUserById(userId: number) {
     const user = this.users[userId];
     if (!user) {
@@ -90,9 +107,26 @@ export class MiniKancolleStore extends Store {
     return user;
   }
 
+  public getOrderById(orderId: number) {
+    return _.find(this.orders, (order) => order.id === orderId);
+  }
+
+  public getMyPublishedOrdersByUserId(userId: number) {
+    return _(this.orders)
+      .filter((order) => order.sellerId === userId)
+      .value();
+  }
+
+  public getMyAcceptedOrdersByUserId(userId: number) {
+    return _(this.orders)
+      .filter((order) => order.buyerId === userId)
+      .value();
+  }
+
   public syncData() {
     const toSyncData = {
       users: _.mapValues(this.users, (user) => user.asJson),
+      orders: _.map(this.orders, (order) => order.asJson),
     };
     fs.outputJsonSync(this.dbPath, toSyncData);
   }

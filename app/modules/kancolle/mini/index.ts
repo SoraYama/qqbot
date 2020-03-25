@@ -14,6 +14,7 @@ import upgrade from './handlers/upgrade';
 import setSecretary from './handlers/secretary';
 import help from './handlers/help';
 import me from './handlers/me';
+import order from './handlers/order';
 
 class MiniKancolleModule extends Module {
   constructor(bot: CQWebSocket) {
@@ -182,6 +183,11 @@ class MiniKancolleModule extends Module {
         }
         const rate = store.getTradeRate(sourceType);
         reply(`目前${RESOURCE_NAMES[sourceType - 1]}对其他资源的交换比率为[${rate.join(', ')}]`);
+        return;
+      }
+
+      case ACTIONS.order: {
+        order(params, reply, user);
         return;
       }
 
