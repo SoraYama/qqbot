@@ -34,10 +34,26 @@ const order = (params: string[], reply: (content: string) => void, user: User | 
     const orderType = tradeTypes.indexOf(action);
     if (orderType >= 0) {
       const [tradingStr, targetUserId = null] = extra;
+      if (/^\d+([,，]\d+)*-\d+([,，]\d+)*$/.test(tradingStr) === false) {
+        reply(
+          '交易信息输入错误, 请输入类似于 "1000,1001-10000,10000,10000,10000"【短杠前后分别为交易出和入的资源/舰娘ID（根据你的交易类型）, 数字间逗号分隔不能有空格】',
+        );
+        return;
+      }
       const [outcoming, incoming] = tradingStr
         .split('-')
-        .map((str) => str.split(','))
+        .map((str) => str.split(/,|，/))
         .map((item) => item.map((s) => +s));
+      const checkInputAccordingToOrderType = [[incoming], [outcoming], [incoming, outcoming], []][
+        orderType
+      ];
+      if (
+        !_.isEmpty(checkInputAccordingToOrderType) &&
+        _.some(checkInputAccordingToOrderType, (arr) => arr.length !== 4)
+      ) {
+        reply('交换资源时需要4种资源数量写全');
+        return;
+      }
       if (_([outcoming, incoming]).every((arr) => _(arr).some((n) => !_.isInteger(n) || n < 0))) {
         reply('资源或舰娘ID输入错误');
         return;
@@ -49,7 +65,9 @@ const order = (params: string[], reply: (content: string) => void, user: User | 
         buyerId: targetUserId ? +targetUserId : null,
         orderType,
       });
-      reply(`交易订单已创建, ID为 ${newOrder.id}`);
+      reply(`交易订单已创建, ID为 ${newOrder.id}
+确认订单内容可以执行 "${PREFIX} ${ACTIONS.order} info ${newOrder.id}"
+发布订单可以执行 "${PREFIX} ${ACTIONS.order} pub ${newOrder.id}"`);
       return;
     }
     switch (action) {
@@ -76,8 +94,8 @@ const order = (params: string[], reply: (content: string) => void, user: User | 
           .value();
         reply(
           `你发布的订单ID们:\n${
-            _.isEmpty(myPublished) ? '空' : myPublished.join('\n')
-          }\n\n你作为接收方的订单ID们:\n${_.isEmpty(myReceived) ? '空' : myPublished.join('\n')}`,
+            _.isEmpty(myPublished) ? '暂无' : myPublished.join('\n')
+          }\n\n你作为接收方的订单ID们:\n${_.isEmpty(myReceived) ? '暂无' : myReceived.join('\n')}`,
         );
         return;
       }
@@ -120,8 +138,12 @@ const order = (params: string[], reply: (content: string) => void, user: User | 
           reply('没有查询到该ID的订单');
           return;
         }
+        if (order.sellerId !== user.id) {
+          reply('你不能发布别人的订单哦');
+          return;
+        }
         order.publish();
-        reply(`订单发布成功~`);
+        reply(`订单发布成功`);
         return;
       }
       case 'cancel': {
@@ -131,8 +153,12 @@ const order = (params: string[], reply: (content: string) => void, user: User | 
           reply('没有查询到该ID的订单');
           return;
         }
+        if (order.sellerId !== user.id) {
+          reply('你不能取消别人的订单哦');
+          return;
+        }
         order.cancel();
-        reply(`订单取消成功~`);
+        reply(`订单取消成功`);
         return;
       }
       default: {

@@ -204,19 +204,18 @@ class Order {
     this.toTrade = toTrade;
     this.wanted = wanted;
     this.orderType = orderType;
+    this.buyerId = buyerId || null;
     // create new order
     if (!id) {
       const now = _.now();
       this.id = now;
       this.createdAt = now;
       this.status = OrderStatus.CREATED;
-      this.buyerId = null;
     } else {
       // create from exsiting data
       this.id = id;
       this.createdAt = createdAt!;
       this.status = status!;
-      this.buyerId = buyerId || null;
     }
   }
 }
