@@ -3,7 +3,7 @@ import _ from 'lodash';
 import pickRandom from '../../../../utils/pickRandom';
 import User from '../store/user';
 import { LEAST_RESOURCE, BUILD_RESOURCE_MAX, logger } from '../constants';
-import { showResource, computeExtraWeight, showShip } from '../utils';
+import { showResource, computeExtraWeight, showShip, weightBalance } from '../utils';
 import groupConfig from '../assets/build-group';
 import shipsConfig from '../assets/ships';
 import { ADMIN_ID } from '../../../../configs';
@@ -23,7 +23,9 @@ const build = (resourceString: string[] = [], user: User) => {
     return `资源不足, 目前资源为:\n${showResource(user.resource)}`;
   }
 
-  const group = pickRandom(groupConfig);
+  const balancedGroupConfig = weightBalance(groupConfig, -(user.level - 1) * 10);
+  console.log(balancedGroupConfig, user.level);
+  const group = pickRandom(balancedGroupConfig);
   const filteredByGroup = _(shipsConfig).filter((ship) => group.ships.includes(ship.id));
   const filteredByResource = filteredByGroup.filter((item) =>
     _.every(item.resource, (r, i) => r <= inputResource[i]),

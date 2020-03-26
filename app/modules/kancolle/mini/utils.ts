@@ -17,7 +17,7 @@ export const weightBalance = <T extends RandomItem>(list: T[], figure: number) =
     .sortBy('weight')
     .map((item, index) => ({
       ...item,
-      weight: Math.max(item.weight + Math.round(figure + index * d), 0),
+      weight: Math.max(item.weight + Math.round(figure + index * d), 1),
     }))
     .value();
   return res;

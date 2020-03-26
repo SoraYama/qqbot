@@ -245,6 +245,27 @@ const shipsConfig = [
     weight: 25,
   },
   {
+    id: 1035,
+    name: 'Roma',
+    resource: [3500, 4500, 4000, 2000],
+    seceretary: [1036, 1037, 2003, 2004],
+    weight: 50,
+  },
+  {
+    id: 1036,
+    name: 'Littorio',
+    resource: [3500, 4500, 4000, 2000],
+    seceretary: [1035, 1037, 2003, 2004],
+    weight: 50,
+  },
+  {
+    id: 1037,
+    name: 'Vittorio Veneto',
+    resource: [3500, 4500, 4000, 2000],
+    seceretary: [1035, 1036, 2003, 2004],
+    weight: 25,
+  },
+  {
     id: 2000,
     name: 'Z1',
     resource: [1500, 1500, 2000, 1000],

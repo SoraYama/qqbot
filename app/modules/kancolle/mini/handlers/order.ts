@@ -115,7 +115,7 @@ ${getText(myFinishedIds)}\n
 你取消的订单ID:
 ${getText(myCanceledIds)}\n
 你作为接收方的订单ID:
-${getText(myReceived)}\n`);
+${getText(myReceived)}`);
         return;
       }
       case 'info': {
