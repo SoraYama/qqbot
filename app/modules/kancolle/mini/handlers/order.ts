@@ -84,19 +84,38 @@ const order = (params: string[], reply: (content: string) => void, user: User | 
         return;
       }
       case 'me': {
-        const myPublished = _(store.orders)
-          .filter((order) => order.sellerId === user.id)
+        const mySelled = _(store.orders).filter((order) => order.sellerId === user.id);
+        const myStandbyIds = mySelled
+          .filter((order) => order.status === OrderStatus.CREATED)
+          .map((order) => order.id)
+          .value();
+        const myPublishedIds = mySelled
+          .filter((order) => order.status === OrderStatus.ACTIVE)
+          .map((order) => order.id)
+          .value();
+        const myFinishedIds = mySelled
+          .filter((order) => order.status === OrderStatus.FINISHED)
+          .map((order) => order.id)
+          .value();
+        const myCanceledIds = mySelled
+          .filter((order) => order.status === OrderStatus.CANCELD)
           .map((order) => order.id)
           .value();
         const myReceived = _(store.orders)
           .filter((order) => order.buyerId === user.id)
           .map((order) => order.id)
           .value();
-        reply(
-          `你发布的订单ID们:\n${
-            _.isEmpty(myPublished) ? '暂无' : myPublished.join('\n')
-          }\n\n你作为接收方的订单ID们:\n${_.isEmpty(myReceived) ? '暂无' : myReceived.join('\n')}`,
-        );
+        const getText = (ids: number[]) => (_.isEmpty(ids) ? '暂无' : ids.join('\n'));
+        reply(`待发布的订单ID:
+${getText(myStandbyIds)}\n
+你发布的订单ID:
+${getText(myPublishedIds)}\n
+已结束的订单ID:
+${getText(myFinishedIds)}\n
+你取消的订单ID:
+${getText(myCanceledIds)}\n
+你作为接收方的订单ID:
+${getText(myReceived)}\n`);
         return;
       }
       case 'info': {

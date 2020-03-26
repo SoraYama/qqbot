@@ -100,12 +100,9 @@ class User {
     if (_(resource).some((r) => !_.isNumber(r) || _.isNaN(r))) {
       throw new Error(`输入资源应该为整数`);
     }
-    if (resource.length !== 4) {
-      throw new Error('输入资源应该只有4种');
-    }
-    this.resource = _(resource)
+    this.resource = _(this.resource)
       .map((r, i) => {
-        const targetResource = r + this.resource[i];
+        const targetResource = r + resource[i] || 0;
         if (targetResource < 0) {
           throw new Error('资源不足');
         }
