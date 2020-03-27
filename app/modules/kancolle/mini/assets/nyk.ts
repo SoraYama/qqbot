@@ -10,12 +10,12 @@ const nykConfigs = [
     text: '成功',
   },
   {
-    weight: 420,
+    weight: 469,
     value: 150,
     text: '似乎有一点点效果',
   },
   {
-    weight: 549,
+    weight: 500,
     value: -200,
     text: '反向成功',
   },
