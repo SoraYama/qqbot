@@ -89,11 +89,20 @@ class MiniKancolleModule extends Module {
           return;
         }
         const resource = params.slice(0, 4);
+        if (params[4] === 'nyk') {
+          const msg = build(resource, user, true);
+          reply(msg);
+          return;
+        }
         const repeatTimes = +params[4] || 1;
+        const nyk = params[5] === 'nyk';
         const msgs: string[] = [];
         for (let i = 0; i < repeatTimes; i++) {
-          const msg = build(resource, user);
+          const msg = build(resource, user, nyk);
           msgs.push(msg);
+          if (msg.startsWith('资源不足')) {
+            break;
+          }
         }
         reply(msgs.join('\n'));
         return;

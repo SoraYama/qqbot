@@ -18,10 +18,8 @@ export default class XiaoMModule extends Module {
     const dirs = fs.readdirSync(imagePath).filter((fName) => fName.endsWith('.jpg'));
     const selected = dirs[_.random(dirs.length - 1)];
     const repeatRandom = _.random(true);
-    console.log('repeatRandom', repeatRandom);
 
     if (/小m|akiko|xm|秋子/gi.test(ctx.message) && repeatRandom > 0.45) {
-      console.log(selected, imagePath, ctx.message, path.join(imagePath, selected));
       return [
         {
           type: 'image',

@@ -6,6 +6,7 @@ import shipsConfig from '../assets/ships';
 import { MiniKancolleStore } from '.';
 import levelConfig from '../assets/level';
 import { MAX_HOME_LEVEL } from '../constants';
+import { showResource } from '../utils';
 
 const INITIAL_RESOURCE = [20000, 20000, 20000, 20000];
 
@@ -104,7 +105,7 @@ class User {
       .map((r, i) => {
         const targetResource = r + resource[i] || 0;
         if (targetResource < 0) {
-          throw new Error('资源不足');
+          throw new Error(`资源不足, 目前资源为:\n${showResource(this.resource)}`);
         }
         return targetResource;
       })
