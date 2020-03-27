@@ -28,7 +28,7 @@ function computeExtraWeight(requiredResource: number[], inputResource: number[])
 }
 
 function build() {
-  const group = pickRandom(groupConfig);
+  const group = pickRandom(groupConfig)!;
   const filteredByGroup = _(shipsConfig).filter((ship) => group.ships.includes(ship.id));
   const filteredByResource = filteredByGroup.filter((item) =>
     _.every(item.resource, (r, i) => r <= inputResource[i]),
@@ -45,7 +45,7 @@ function build() {
     })
     .value();
 
-  const selectedShip = pickRandom(weightMapped);
+  const selectedShip = pickRandom(weightMapped)!;
   const outPut = `${selectedShip.name},[${inputResource.join(' ')}]\n`;
   fs.appendFile(path.resolve(__dirname, '..', 'report', 'build.csv'), outPut, {
     encoding: 'utf-8',

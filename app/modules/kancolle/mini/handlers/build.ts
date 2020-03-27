@@ -3,7 +3,13 @@ import _ from 'lodash';
 import pickRandom from '../../../../utils/pickRandom';
 import User from '../store/user';
 import { LEAST_RESOURCE, BUILD_RESOURCE_MAX, logger } from '../constants';
-import { showResource, computeExtraWeight, showShip, weightBalance } from '../utils';
+import {
+  showResource,
+  computeExtraWeight,
+  showShip,
+  weightBalance,
+  findConfigShipById,
+} from '../utils';
 import groupConfig from '../assets/build-group';
 import shipsConfig from '../assets/ships';
 import { ADMIN_ID } from '../../../../configs';
@@ -24,8 +30,7 @@ const build = (resourceString: string[] = [], user: User) => {
   }
 
   const balancedGroupConfig = weightBalance(groupConfig, -(user.level - 1) * 10);
-  console.log(balancedGroupConfig, user.level);
-  const group = pickRandom(balancedGroupConfig);
+  const group = pickRandom(balancedGroupConfig)!;
   const filteredByGroup = _(shipsConfig).filter((ship) => group.ships.includes(ship.id));
   const filteredByResource = filteredByGroup.filter((item) =>
     _.every(item.resource, (r, i) => r <= inputResource[i]),
@@ -41,22 +46,7 @@ const build = (resourceString: string[] = [], user: User) => {
       };
     })
     .value();
-  const selectedShip = pickRandom(weightMapped);
-  if (!selectedShip) {
-    logger.warn(
-      'group:',
-      group,
-      'filteredByResource',
-      filteredByResource.value(),
-      'selectedShip:',
-      selectedShip,
-      'weightMapped:',
-      weightMapped,
-      'filteredBySecretary:',
-      filteredBySeceretary.value(),
-    );
-    return `妖精们不知道什么原因罢工了, 资源还给你> <`;
-  }
+  const selectedShip = pickRandom(weightMapped) || findConfigShipById(1000)!;
   user.addShip(selectedShip.id);
   if (user.id !== ADMIN_ID) {
     console.log(user.id, ADMIN_ID);

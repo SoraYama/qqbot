@@ -8,13 +8,13 @@ const rewardConfig = [
     id: 1000,
     type: RewardType.ship,
     reward: [2000],
-    weight: 30,
+    weight: 50,
   },
   {
     id: 1001,
     type: RewardType.ship,
     reward: [2001],
-    weight: 30,
+    weight: 50,
   },
   {
     id: 1002,
@@ -26,13 +26,13 @@ const rewardConfig = [
     id: 1003,
     type: RewardType.ship,
     reward: [2003],
-    weight: 30,
+    weight: 50,
   },
   {
     id: 1004,
     type: RewardType.ship,
     reward: [2004],
-    weight: 30,
+    weight: 50,
   },
   {
     id: 1100,
@@ -44,13 +44,13 @@ const rewardConfig = [
     id: 1101,
     type: RewardType.ship,
     reward: 2,
-    weight: 30,
+    weight: 400,
   },
   {
     id: 1102,
     type: RewardType.ship,
     reward: 3,
-    weight: 100,
+    weight: 499,
   },
   {
     id: 2000,

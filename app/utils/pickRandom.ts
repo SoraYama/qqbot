@@ -5,6 +5,9 @@ export interface RandomItem {
 }
 
 const pickRandom = <T extends RandomItem>(list: T[]) => {
+  if (_.isEmpty(list)) {
+    return null;
+  }
   if (_(list).some((item) => item.weight === undefined)) {
     throw new Error('Missing weight key in item of list');
   }

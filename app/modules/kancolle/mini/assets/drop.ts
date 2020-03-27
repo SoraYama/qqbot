@@ -1,12 +1,12 @@
 const dropConfig = [
   {
     group: 1,
-    weight: 10,
+    weight: 25,
     reward: [1000, 1001, 1002, 1003, 1004],
   },
   {
     group: 2,
-    weight: 40,
+    weight: 25,
     reward: [1100, 1101, 1102],
   },
   {
