@@ -1,6 +1,7 @@
 const buildingGroup = [
   {
     weight: 200,
+    group: 1,
     ships: [
       1001,
       1002,
@@ -22,6 +23,7 @@ const buildingGroup = [
 
   {
     weight: 400,
+    group: 2,
     ships: [
       1000,
       1006,
@@ -50,6 +52,7 @@ const buildingGroup = [
   },
   {
     weight: 600,
+    group: 3,
     ships: [
       1000,
       1011,
@@ -80,6 +83,7 @@ const buildingGroup = [
     ],
   },
   {
+    group: 4,
     weight: 100,
     ships: [1033, 1038, 1005, 1006, 1008, 1003],
   },
