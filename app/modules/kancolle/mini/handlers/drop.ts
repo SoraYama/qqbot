@@ -25,9 +25,11 @@ const drop = (shipIds: number[], user: User) => {
     try {
       user.dropShip(id);
       const dropShipConfig = findConfigShipById(id)!;
-      const dropGroup = pickRandom(
-        weightBalance(dropConfig, Math.round(_.sum(dropShipConfig.resource) / 1000)),
-      )!;
+      const balancedConfigs = weightBalance(
+        dropConfig,
+        Math.round(_.sum(dropShipConfig.resource) / 20),
+      );
+      const dropGroup = pickRandom(balancedConfigs)!;
       const reward = pickRandom(
         _.map(
           dropGroup.reward,
@@ -41,11 +43,14 @@ const drop = (shipIds: number[], user: User) => {
         return `解体${showShip(id)}成功!\n获得资源:\n${showResource(reward.reward as number[])}`;
       } else if (reward.type === RewardType.ship) {
         if (typeof reward.reward === 'number') {
-          const rewardShip = pickRandom(
-            _(groupConfig)
-              .find((g) => g.group === reward.reward)!
-              .ships.map((shipId) => _(shipsConfig).find((s) => s.id === shipId)!),
-          )!;
+          const rewardShip =
+            pickRandom(
+              _(groupConfig)
+                .find((g) => g.group === reward.reward)!
+                .ships.map((shipId) => _(shipsConfig).find((s) => s.id === shipId)!)
+                .filter((s) => _.every(s.resource, (r, i) => r <= dropShipConfig.resource[i]))
+                .filter((s) => s.seceretary === null || s.seceretary.includes(user.secretary!)),
+            ) || findConfigShipById(1013)!;
           user.addShip(rewardShip.id);
           logger.info(`解体结果 - ${user.id} ${id} ${reward.type} ${rewardShip.name}`);
           return `解体${showShip(id)}成功!\n妖精们利用拆卸下来的零件重新建造成了${showShip(

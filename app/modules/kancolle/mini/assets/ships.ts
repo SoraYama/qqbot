@@ -4,7 +4,7 @@ const shipsConfig = [
     name: 'まるゆ',
     resource: [1500, 1500, 2000, 1000],
     seceretary: null,
-    weight: 12,
+    weight: 1,
   },
   {
     id: 1001,
@@ -354,7 +354,7 @@ const shipsConfig = [
     name: '酒匂',
     resource: [1500, 1500, 2000, 1000],
     seceretary: null,
-    weight: 50,
+    weight: 20,
   },
   {
     id: 1051,
