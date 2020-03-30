@@ -1,16 +1,16 @@
 const nykConfigs = [
   {
-    weight: 1,
+    weight: 10,
     value: 10000,
     text: '超大成功',
   },
   {
-    weight: 100,
+    weight: 200,
     value: 500,
     text: '成功',
   },
   {
-    weight: 549,
+    weight: 440,
     value: 150,
     text: '似乎有一点点效果',
   },
