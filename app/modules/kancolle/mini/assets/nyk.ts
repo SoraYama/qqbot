@@ -5,17 +5,17 @@ const nykConfigs = [
     text: '超大成功',
   },
   {
-    weight: 30,
+    weight: 50,
     value: 500,
     text: '成功',
   },
   {
-    weight: 469,
+    weight: 549,
     value: 150,
     text: '似乎有一点点效果',
   },
   {
-    weight: 500,
+    weight: 400,
     value: -200,
     text: '反向成功',
   },
