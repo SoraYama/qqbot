@@ -157,8 +157,7 @@ const ExpandedShipTable = (props: ExpandedShipTableProps) => {
             </Popconfirm>
           </span>
         ) : (
-          <Button disabled={editingId !== -1} onClick={() => edit(record)}>
-            <ToolFilled />
+          <Button icon={<ToolFilled />} disabled={editingId !== -1} onClick={() => edit(record)}>
             修改
           </Button>
         );
@@ -310,8 +309,7 @@ function UserTable(props: UserTableProps) {
         );
         return (
           <Dropdown overlay={content}>
-            <Button type="default">
-              <ToolFilled />
+            <Button icon={<ToolFilled />} type="default">
               修改
             </Button>
           </Dropdown>

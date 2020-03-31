@@ -10,6 +10,8 @@ export default (app: Application) => {
   router.put('/api/resource', userControllers.setResource);
   router.put('/api/level', userControllers.setLevel);
   router.put('/api/user/ship', userControllers.setShipAmount);
+  router.get('/api/order', userControllers.getOrder);
+  router.del('/api/order', userControllers.deleteOrder);
 
   app.use(router.routes()).use(router.allowedMethods());
 };

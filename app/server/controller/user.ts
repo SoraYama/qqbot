@@ -103,6 +103,33 @@ const userControllers = {
       };
     }
   },
+
+  getOrder: async (ctx: Context & RouterContext) => {
+    try {
+      const orders = _(store.orders)
+        .map((order) => order.asJson)
+        .value();
+      ctx.response.body = orders;
+    } catch (e) {
+      ctx.response.body = {
+        errMsg: e.message,
+      };
+    }
+  },
+
+  deleteOrder: async (ctx: Context & RouterContext) => {
+    const { orderId } = ctx.request.body;
+    try {
+      store.removeOrderById(orderId);
+      ctx.response.body = {
+        status: 0,
+      };
+    } catch (e) {
+      ctx.response.body = {
+        errMsg: e.message,
+      };
+    }
+  },
 };
 
 export default userControllers;

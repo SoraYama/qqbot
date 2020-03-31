@@ -99,6 +99,16 @@ export class MiniKancolleStore extends Store {
     return newOrder;
   }
 
+  @action
+  public removeOrderById(id: number) {
+    const order = this.getOrderById(id);
+    if (!order) {
+      throw new Error(`没有找到该ID的订单: ${id}`);
+    }
+    this.orders.splice(this.orders.indexOf(order), 1);
+    order.dispose();
+  }
+
   public getUserById(userId: number) {
     const user = this.users[userId];
     if (!user) {
