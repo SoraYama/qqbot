@@ -23,8 +23,8 @@ RUN cd ./views && \
 
 COPY ./views ./views
 
-RUN cd ./views && \
-  yarn build
+# RUN cd ./views && \
+#   yarn build
 
 COPY . .
 
