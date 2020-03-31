@@ -10,6 +10,7 @@ services:
     volumes:
       - db:/app/db
       - logs:/app/logs
+      - ./views/build:/app/views/build
 
 volumes:
   db:
