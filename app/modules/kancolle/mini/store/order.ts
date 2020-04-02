@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { observable, action, computed, IReactionDisposer, reaction } from 'mobx';
 import { MiniKancolleStore } from '.';
 import { logger } from '../constants';
+import { showResource, showShip } from '../utils';
 
 const tradeConfigs = [
   {
@@ -116,6 +117,28 @@ class Order {
       return null;
     }
     return this.store.getUserById(this.buyerId);
+  }
+
+  @computed
+  public get toTradeAsText() {
+    if (
+      this.orderType === OrderType.RESOURCE_TO_RESOURCE ||
+      this.orderType === OrderType.RESOURCE_TO_SHIP
+    ) {
+      return showResource(this.toTrade);
+    }
+    return _.map(this.toTrade, (id) => showShip(id)).join('、');
+  }
+
+  @computed
+  public get wantedAsText() {
+    if (
+      this.orderType === OrderType.RESOURCE_TO_RESOURCE ||
+      this.orderType === OrderType.SHIP_TO_RESOURCE
+    ) {
+      return showResource(this.wanted);
+    }
+    return _.map(this.wanted, (id) => showShip(id)).join('、');
   }
 
   @action

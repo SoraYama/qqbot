@@ -107,7 +107,11 @@ const userControllers = {
   getOrder: async (ctx: Context & RouterContext) => {
     try {
       const orders = _(store.orders)
-        .map((order) => order.asJson)
+        .map((order) => ({
+          ...order.asJson,
+          toTrade: order.toTradeAsText,
+          wanted: order.wantedAsText,
+        }))
         .value();
       ctx.response.body = orders;
     } catch (e) {
