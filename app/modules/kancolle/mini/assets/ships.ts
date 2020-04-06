@@ -538,6 +538,34 @@ const shipsConfig = [
     seceretary: null,
     weight: 0,
   },
+  {
+    id: 3000,
+    name: 'Colorado',
+    resource: [3500, 4500, 4000, 1500],
+    seceretary: [2006, 2009, 2011, 2012, 1010, 1033],
+    weight: 333,
+  },
+  {
+    id: 3001,
+    name: 'Maryland',
+    resource: [3500, 4500, 4000, 1500],
+    seceretary: [2006, 2009, 2011, 2012, 1010, 1033],
+    weight: 333,
+  },
+  {
+    id: 3002,
+    name: 'West Virginia',
+    resource: [3500, 4500, 4000, 1500],
+    seceretary: [2006, 2009, 2011, 2012, 1010, 1033],
+    weight: 333,
+  },
+  {
+    id: 3003,
+    name: 'Belfast',
+    resource: [2000, 2000, 2500, 1000],
+    seceretary: [2007, 2008, 1039, 1040],
+    weight: 1,
+  },
 ];
 
 export default shipsConfig;

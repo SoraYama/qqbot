@@ -33,7 +33,9 @@ const build = (resourceString: string[] = [], user: User, isNyk: boolean) => {
 
     const nyk = pickRandom(nykConfigs)!;
     const balancedGroupConfig = weightBalance(
-      groupConfig,
+      _(groupConfig)
+        .filter((conf) => !conf.outOfDate || new Date().getTime() <= conf.outOfDate)
+        .value(),
       -(user.level - 1) * 10 + (isNyk ? nyk.value : 0),
     );
     const group = pickRandom(balancedGroupConfig)!;
