@@ -51,7 +51,7 @@ const buildingGroup = [
     ],
   },
   {
-    weight: 500,
+    weight: 600,
     group: 3,
     ships: [
       1000,
@@ -89,7 +89,7 @@ const buildingGroup = [
   },
   {
     group: 5,
-    weight: 150,
+    weight: 50,
     outOfDate: 1586793600000,
     ships: [3000, 3001, 3002, 3003],
   },
