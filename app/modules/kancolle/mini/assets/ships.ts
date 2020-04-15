@@ -566,6 +566,13 @@ const shipsConfig = [
     seceretary: [2007, 2008, 1039, 1040],
     weight: 1,
   },
+  {
+    id: 3004,
+    name: 'Gneisenau',
+    resource: [3500, 4500, 4000, 2000],
+    seceretary: [2000, 2001, 2002, 1003],
+    weight: 5,
+  },
 ];
 
 export default shipsConfig;
