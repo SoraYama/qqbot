@@ -55,6 +55,7 @@ const build = (resourceString: string[] = [], user: User, isNyk: boolean) => {
       })
       .value();
     const selectedShip = pickRandom(weightMapped) || findConfigShipById(1000)!;
+    const isNewShip = !user.getShipById(selectedShip.id);
     user.addShip(selectedShip.id);
     if (user.id !== ADMIN_ID) {
       user.addResource(_.map(inputResource, (r) => (isNyk ? Math.round(-r * 1.1) : -r)));
@@ -65,7 +66,8 @@ const build = (resourceString: string[] = [], user: User, isNyk: boolean) => {
       }`,
     );
     const nykText = isNyk ? `奶一口${nyk.text}\n` : '';
-    return `${nykText}舰娘${showShip(selectedShip.id)}加入了舰队~`;
+    const newText = isNewShip ? '[NEW] ' : '';
+    return `${nykText}${newText}舰娘${showShip(selectedShip.id)}加入了舰队~`;
   } catch (e) {
     return e.message as string;
   }
