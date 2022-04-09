@@ -28,7 +28,7 @@
     "lodash": "^4.17.19",
     "log4js": "^6.1.2",
     "mobx": "^5.15.4",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "whocallsthefleet-database": "^20200114.1.0"
   },
   "devDependencies": {
